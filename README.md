@@ -19,4 +19,58 @@
 
 + `Microservices Ready`: Spring Boot is optimized for building microservices, whereas Spring is more general-purpose.
 
-+ `Faster Development`: With Spring Boot Starters, developers can quickly set up projects, while Spring requires adding and configuring dependencies manually.  
++ `Faster Development`: With Spring Boot Starters, developers can quickly set up projects, while Spring requires adding and configuring dependencies manually.
+
+### 3. What are the key features of Spring Boot?
+
+
+
+##### Key Features of Spring Boot 🚀
+##### Auto-Configuration 🛠️
+
++ Automatically configures Spring components based on dependencies.
+
++ Reduces the need for manual configuration.
+
+##### Standalone Applications 🏃‍♂️
+
++ Comes with an embedded server (Tomcat, Jetty, Undertow).
+
++ No need for external deployment (WAR files).
+
+##### Spring Boot Starters 🚀
+
++ Predefined dependency sets to simplify project setup.
+
++ Example: `spring-boot-starter-web`, `spring-boot-starter-data-jpa`.
+
+##### Spring Boot CLI (Command Line Interface) 🖥️
+
++ Allows developers to run Groovy scripts to develop and test applications quickly.
+
+##### Externalized Configuration 📄
+
++ Supports .properties and .yaml files for different environments.
+
++ Can read configurations from environment variables and command-line arguments.
+
+##### Spring Boot Actuator 📊
+
++ Provides built-in monitoring, metrics, and health-check endpoints.
+
++ Example:` /actuator/health `, `/actuator/metrics.`
+
+##### Spring Security Integration 🔐
+
++ Easy integration for authentication, authorization, and security features.
+
+##### Microservices Support 🌍
+
++ Works seamlessly with Spring Cloud to build scalable microservices.
+
+##### Production-Ready Features ⚙️
+
++ Logging (SLF4J, Logback), error handling, and performance monitoring.
+
+##### Easy Testing ✅
++ Provides testing support with @SpringBootTest, MockMvc, and TestRestTemplate.  
