@@ -29,34 +29,7 @@
 
 + `Faster Development`: With Spring Boot Starters, developers can quickly set up projects, while Spring requires adding and configuring dependencies manually.
 
-Spring Boot in Simple Terms
-Spring Boot is a framework that makes it easy to create Java applications. It helps developers by:
-
-✅ Removing complex configurations (No XML needed)
-✅ Providing built-in servers (No need for Tomcat setup)
-✅ Auto-configuring components (Less manual setup)
-✅ Simplifying dependencies (Using "Starters")
-✅ Making development faster (Ideal for microservices)
-
-With Spring Boot, you can quickly build web applications and REST APIs without worrying about setup. 🚀
-
-Would you like a simple project example? 😊
-
-
-
-
-
-
-
-You said:
-clerify the spring and springboot use in java
-
-
-
-2/2
-
-ChatGPT said:
-Spring vs. Spring Boot: When to Use Each in Java
+## Spring vs. Spring Boot: When to Use Each in Java
 Both Spring and Spring Boot are used for Java application development, but they serve different purposes and simplify development in different ways.
 
 ### 1️⃣ Spring Framework
