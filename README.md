@@ -570,7 +570,81 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 + Spring Boot Security provides built-in security endpoints and customizable authentication for monitoring and protecting your application.
 
 
+## Running a Spring Boot App from the Command Line 🚀
+You can run a Spring Boot application from the command line using Maven, Gradle, or a built JAR file.
 
+### 1️⃣ Run Using Maven (Direct Execution)
++ If you're using Maven, navigate to your project folder and run:
+```
+mvn spring-boot:run
+```
+ + 🔹 This command compiles and runs your Spring Boot application.
+
++ ✅ If you want to specify a profile:
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
++ 2️⃣ Run Using Gradle
+If you're using Gradle, run:
+```
+./gradlew bootRun  # For Linux/macOS
+gradlew bootRun     # For Windows
+```
+🔹 This starts the application without needing to build a JAR file.
+
+✅ Run with a profile:
+
+```
+./gradlew bootRun --args='--spring.profiles.active=dev'
+```
+### 3️⃣ Run from a JAR File
++ If you built your project into a JAR file, follow these steps:
+
+#### Step 1: Build the JAR File
+Run the following command to create a JAR:
+```
+mvn clean package  # For Maven
+./gradlew bootJar  # For Gradle
+```
++ This generates a JAR file inside the target/ or build/libs/ directory.
+
+#### Step 2: Run the JAR File
++ Once built, run the JAR file using:
+```
+java -jar target/myapp.jar  # Replace with your JAR file name
+```
++ ✅ Run with a specific profile:
+
+sh
+Copy
+Edit
+java -jar target/myapp.jar --spring.profiles.active=dev
+✅ Run on a different port:
+```
+java -jar target/myapp.jar --server.port=8081
+```
+#### 4️⃣ Running with Docker 🐳 (Optional)
++ If you have Docker installed, you can create a Docker image and run your app inside a container.
+
+##### Step 1: Create a Dockerfile
+```
+FROM openjdk:17
+COPY target/myapp.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+#### Step 2: Build and Run the Container
+```
+docker build -t myapp .
+docker run -p 8080:8080 myapp
+```
+🔹 Your app will now be running in a Docker container.
+
+### 🎯 Conclusion
++ You can run your Spring Boot app using:
++ ✅ ` mvn spring-boot:run` (Maven)
++ ✅ `./gradlew bootRun` (Gradle)
++ ✅ `java -jar myapp.jar `(JAR File)
++ ✅ `docker run myapp` (Docker)
 
 
 
