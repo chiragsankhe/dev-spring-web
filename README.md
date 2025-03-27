@@ -1,6 +1,6 @@
 ## Interview questions 
 
-### 1. What is Spring Boot?
+## 1. What is Spring Boot?
 + Spring Boot is a framework built on top of Spring Framework that simplifies the development of Java-based web applications and microservices. It eliminates a lot of boilerplate code, provides built-in configurations, and allows developers to focus on writing business logic rather than managing infrastructure.
 
 + Spring Boot in Simple Terms
@@ -14,7 +14,7 @@
 
 + With Spring Boot, you can quickly build web applications and REST APIs without worrying about setup
 
-### 2. What is Spring Boot, and how is it different from the traditional Spring Framework?
+## 2. What is Spring Boot, and how is it different from the traditional Spring Framework?
 
 + Spring Boot is a framework built on top of the Spring Framework that simplifies the development of Java applications by providing auto-configuration, embedded servers, and opinionated defaults.
 
@@ -79,7 +79,7 @@ Both Spring and Spring Boot are used for Java application development, but they 
 
 + If you want to develop `faster` with `less setup`, use Spring Boot.  
 
-### 3. What are the key features of Spring Boot?
+## 3. What are the key features of Spring Boot?
 
 
 
@@ -131,4 +131,29 @@ Both Spring and Spring Boot are used for Java application development, but they 
 + Logging (SLF4J, Logback), error handling, and performance monitoring.
 
 ##### Easy Testing ✅
-+ Provides testing support with @SpringBootTest, MockMvc, and TestRestTemplate.  
++ Provides testing support with @SpringBootTest, MockMvc, and TestRestTemplate.
+
+## 4. Does Spring Boot Replace Spring MVC, Spring Security, etc.? 🤔
++ `No`, Spring Boot `does NOT `replace `Spring MVC`, `Spring Security`, or other Spring modules. Instead, it makes them easier to use by providing `auto-configuration` and `reducing boilerplate code`.
+
+### 🔹 Spring Boot vs. Spring MVC, Spring Security, etc.
+|Spring Technology|	What It Does|	Spring Boot's Role|
+|-------------|----------------|--------------------|
+Spring MVC	Builds web applications (Controllers, Views, REST APIs)	Spring Boot auto-configures MVC settings and embeds a server
++ Spring Security	Handles authentication, authorization, and security	Spring Boot simplifies security setup with spring-boot-starter-security
++ Spring Data JPA	Manages database access with Hibernate and JPA	Spring Boot configures JPA and provides default settings
++ `Spring Cloud	Supports microservices, service discovery, and cloud features	Spring Boot helps in easier microservices development
+🔹 How Spring Boot Works with Spring Modules
+Spring Boot builds on top of Spring's core modules and enhances them with auto-configuration.
+
+For example, in a Spring MVC app (without Spring Boot), you must manually:
+✅ Set up a DispatcherServlet
+✅ Configure View Resolvers
+✅ Define beans in xml or Java configuration
+
+With Spring Boot, it’s all pre-configured. Just add spring-boot-starter-web, and MVC works out of the box! 🚀
+
+🔹 Key Takeaway
+Spring Boot does not replace Spring MVC, Spring Security, or Spring Data JPA.
+
+Instead, it makes them easier to configure and use by providing auto-configuration and embedded servers.
