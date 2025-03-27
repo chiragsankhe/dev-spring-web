@@ -398,7 +398,176 @@ public void runTask() {
 + Spring annotations make it easy to build configurable, scalable, and maintainable applications. 🚀
 
 
+## Spring Boot Actuator 🚀
+Spring Boot Actuator provides built-in endpoints to monitor and manage your application in production.
 
+## 🌟 Why Use Spring Boot Actuator?
++ ✔` Health Monitoring 🩺` - Check if the app is running.
++ ✔ `Metrics 📊 `- View CPU, memory, and request stats.
++ ✔ `Logging & Tracing 📜` - Monitor logs and exceptions.
++ ✔ `Application Info ℹ `- View build version and environment details.
++ ✔ `Custom Endpoints ✨` - Create your own monitoring endpoints.
+
+### 🛠 How to Enable Spring Boot Actuator?
+#### Step 1: Add Actuator Dependency
++ Add this to `pom.xml`:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+#### Step 2: Configure Actuator Endpoints
++ By default, only the `/actuator/health` and `/actuator/info` endpoints are enabled.
++ To enable all endpoints, add this to application.properties:
+```
+management.endpoints.web.exposure.include=*
+```
++ 🔹 This makes all Actuator endpoints accessible via `http://localhost:8080/actuator`
+
+### 🚀 Common Actuator Endpoints
+| Endpoint| 	Description|
+|----------|---------------|
+|/actuator/health	|Shows the health status of the application.|
+|/actuator/info|	Displays application info (version, name, etc.).|
+|/actuator/metrics|	Shows various metrics (CPU, memory, GC, threads).|
+|/actuator/env	|Displays environment properties.|
+|/actuator/beans	|Lists all Spring beans in the app.|
+|/actuator/mappings	|Shows all URL mappings.|
+|/actuator/loggers	|Manages logging levels dynamically.|
++ ✅ Example: `Checking App Health`
+```
+GET http://localhost:8080/actuator/health
+```
+Response:
+```
+{
+    "status": "UP"
+}
+```
+#### 🔐 Securing Actuator Endpoints
++ Since Actuator exposes system information, it's important to secure it.
+
++ Enable Authentication for Actuator
++ Add this to application.properties:
+```
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
+```
++ 🔹 This limits Actuator access to only` /health` and `/info.`
+
+### ✨ Custom Actuator Endpoints
++ You can create your own Actuator endpoints by defining a bean:
+
++ ✅ Example: `Custom /actuator/custom `Endpoint
+```
+@Component
+@Endpoint(id = "custom")
+public class CustomEndpoint {
+
+    @ReadOperation
+    public String customEndpoint() {
+        return "Hello, Prachi! This is a custom actuator endpoint!";
+    }
+}
+```
++ Now, you can access it at:
+```
+GET http://localhost:8080/actuator/custom
+```
+### 🎯 Conclusion
++ Spring Boot Actuator is a powerful tool for `monitoring`, `managing`, and `debugging ` Spring Boot applications. 🚀
+
+
+
+### Spring Boot Security Endpoints 🔐
+Spring Boot Security provides various `built-in` endpoints to help monitor and manage `authentication`, `authorization`, and `user sessions`.
+
+## 🌟 Common Security Endpoints in Spring Boot
+|Endpoint	|Description|
+|---------|-------------|
+|/login|	Default login page (when Spring Security is enabled).|
+|/logout |Logs out the user and invalidates the session.|
+|/actuator/loggers|	Displays and manages security-related logs.|
+|/actuator/health|	Shows the health status of the app, including security checks.|
+|/actuator/env|	Displays security-related environment properties.|
+### 🛠 How to Enable Security Endpoints?
++ By default, Spring Boot Secures All Endpoints 🔒
++ To enable Actuator Security Endpoints, update application.properties:
+```
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+```
++ 🔹 This allows access to all Actuator endpoints, including security-related ones.
+
+## 🔐 Securing Actuator Endpoints
++ Since Actuator exposes sensitive data, you should restrict access using Spring Security.
+
+#### Step 1: Add Security Dependency
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+#### Step 2: Configure Authentication for Security Endpoints
++ Add security settings in application.properties:
+```
+# Secure all Actuator endpoints (default behavior)
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+spring.security.user.name=admin
+spring.security.user.password=admin123
+```
++ 🔹 This requires authentication for all endpoints.
+
+### 🚀 Custom Security Configuration
++ To customize which endpoints are protected, create a Security Config class:
+
+✅ Example: Secure Actuator Endpoints with Basic Auth
+```
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**").hasRole("ADMIN") // Restrict actuator to admins
+                .anyRequest().authenticated()
+            )
+            .httpBasic(); // Enable basic authentication
+        return http.build();
+    }
+}
+```
++ 🔹 Now, only users with ADMIN role can access `/actuator/* `endpoints.
+
+#### 🛡 Protecting Specific Endpoints
++ You can restrict access to login/logout pages and other security endpoints:
+
++ ✅ Example: Restricting 1Login/Logout` Endpoints
+```
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/admin/**").hasRole("ADMIN") // Protect admin endpoints
+            .requestMatchers("/user/**").hasRole("USER") // Restrict user endpoints
+            .anyRequest().permitAll()
+        )
+        .formLogin() // Enable login page
+        .and()
+        .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/"));
+    return http.build();
+}
+```
++ 🔹 Admin endpoints require ADMIN role, User endpoints require USER role, and other requests are public.
+
+#### ✨ Conclusion
++ Spring Boot Security provides built-in security endpoints and customizable authentication for monitoring and protecting your application.
 
 
 
