@@ -139,21 +139,269 @@ Both Spring and Spring Boot are used for Java application development, but they 
 ### 🔹 Spring Boot vs. Spring MVC, Spring Security, etc.
 |Spring Technology|	What It Does|	Spring Boot's Role|
 |-------------|----------------|--------------------|
-Spring MVC	Builds web applications (Controllers, Views, REST APIs)	Spring Boot auto-configures MVC settings and embeds a server
-+ Spring Security	Handles authentication, authorization, and security	Spring Boot simplifies security setup with spring-boot-starter-security
-+ Spring Data JPA	Manages database access with Hibernate and JPA	Spring Boot configures JPA and provides default settings
-+ `Spring Cloud	Supports microservices, service discovery, and cloud features	Spring Boot helps in easier microservices development
-🔹 How Spring Boot Works with Spring Modules
-Spring Boot builds on top of Spring's core modules and enhances them with auto-configuration.
+|Spring MVC	|Builds web applications (Controllers, Views, REST APIs)	|Spring Boot auto-configures MVC settings and embeds a server|
+| Spring Security| Handles authentication, authorization, and security|	Spring Boot simplifies security setup with `spring-boot-starter-security`|
+| Spring Data| JPA	Manages database access with Hibernate and JPA	|Spring Boot configures JPA and provides default settings|
+| `Spring Cloud|	Supports microservices, service discovery, and cloud features|	Spring Boot helps in easier microservices development|
+### 🔹 How Spring Boot Works with Spring Modules
++ Spring Boot builds on top of Spring's core modules and enhances them with `auto-configuration`.
 
-For example, in a Spring MVC app (without Spring Boot), you must manually:
-✅ Set up a DispatcherServlet
-✅ Configure View Resolvers
-✅ Define beans in xml or Java configuration
++ For example, in a Spring MVC app (without Spring Boot), you must manually:
++ ✅ Set up a DispatcherServlet
++ ✅ Configure View Resolvers
++ ✅ Define beans in xml or Java configuration
 
-With Spring Boot, it’s all pre-configured. Just add spring-boot-starter-web, and MVC works out of the box! 🚀
+With Spring Boot, it’s all `pre-configured`. Just add `spring-boot-starter-web`, and MVC works out of the box! 🚀
 
-🔹 Key Takeaway
-Spring Boot does not replace Spring MVC, Spring Security, or Spring Data JPA.
+### 🔹 Key Takeaway
++ Spring Boot does not replace Spring MVC, Spring Security, or Spring Data JPA.
 
-Instead, it makes them easier to configure and use by providing auto-configuration and embedded servers.
++ Instead, it makes them easier to configure and use by providing auto-configuration and embedded servers.
+
+## 5 Does Spring Boot Run Code Faster Than Regular Spring? 
+
++ `No`, Spring Boot does not make code execution faster than regular Spring, but it makes development faster by reducing configuration and boilerplate code.
+
+### 🔹 Performance Comparison: Spring Boot vs. Spring
+|Feature	|Spring (Without Boot)|	Spring Boot|
+|---------|--------------------|-------------|
+|Startup Time|	Faster (less auto-configuration)	|Slightly slower (auto-configuration overhead)|
+|Runtime Performance	|Same as Spring Boot|	Same as Spring|
+|Development Speed	|Slower (manual setup)|	Faster (auto-configured)|
+|Memory Usage	|Lower (only necessary components)|	Slightly higher (extra dependencies)|
+
+## 6 what is use of mavan in java springboot ?
++ Maven is a build `automation tool` used primarily for `Java projects`, including Spring Boot applications. It helps manage` project dependencies`,` build lifecycle`, and `packaging`.
+
+#### Key Uses of Maven in Spring Boot:
+### Dependency Management
+
++ Maven simplifies adding and managing dependencies using the `pom.xml` file.
+
++ Spring Boot provides a starter dependency system, e.g.:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
++ It automatically downloads the required JAR files from Maven Central Repository.
+
+### Project Structure and Build Management
+
++ It standardizes project structure with directories like `src/main/java `and `src/test/java.`
+
++ Uses predefined build lifecycle phases (`compile`, `test`,` package`, `install`, `deploy`).
+
+### Simplifies Compilation and Packaging
+
++ Easily compiles Java code using `mvn` compile.
+
++ Packages the project into a `.jar` or `.war` file using `mvn `package.
+
+### Spring Boot Plugin for Easy Execution
+
++ The Spring Boot Maven plugin allows running applications directly:
+```
+mvn spring-boot:run
+```
+### Integration with CI/CD & DevOps
+
++ Works well with `Jenkins`, `GitHub Actions`, and `Docker` for automation.
+
++ Used in deployment pipelines for building and testing applications.
+
+### Conclusion
++ Maven simplifies `dependency management`,` builds`, `testing`, and` deployment in Spring Boot projects`, making development `faster` and more `efficient`.
+
+## 7 What is a Spring Boot Starter?
++ A Spring Boot Starter is a `pre-configured dependency` that bundles commonly used libraries for a specific feature, making it easy to set up a Spring Boot project.
+
++ Instead of manually adding multiple dependencies, Starters provide a single dependency that includes everything needed for a particular functionality.
+
+### Example of a Spring Boot Starter
++ To create a `REST API` in Spring Boot, you need the Spring Web Starter:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+##### This automatically includes dependencies like:
+ + ✅ Spring MVC
++ ✅ Tomcat (embedded server)
++ ✅ Jackson (for JSON conversion)
+
+#### Popular Spring Boot Starters
+|Starter Name	|Purpose|
+|-------------|--------|
+|`spring-boot-starter-web`|	For building REST APIs (Spring MVC + Tomcat)|
+|1spring-boot-starter-data-jpa`	|For database access using JPA/Hibernate.|
+|`spring-boot-starter-security`|	For authentication and security features.|
+|`spring-boot-starter-thymeleaf `|	For using Thymeleaf templating engine.|
+| `spring-boot-starter-test`|	For unit and integration testing.|
+| `spring-boot-starter-actuator`|	For monitoring and application metrics.|
+### Why Use Spring Boot Starters?
++ ✔ Simplifies dependency management
++ ✔ Reduces boilerplate code
++ ✔ Ensures compatibility between libraries
++ ✔ Speeds up development
+
+##  What is Spring Initializr?
++ Spring Initializer is a tool that helps us to create skeleton of spring boot project or project structure by providing a `maven `or` gradle `file to build the application. It set up the framework from scratch.
+
+## 6. Explain the internal working of Spring Boot?
++ Here are the main steps involved in how Spring Boot works:
+
+1. Start by creating a new Spring Boot project.
+2. Add the necessary dependencies to your project.
+3.Annotate the application with the appropriate annotations.
+4.Run the application.
+
+##  Define the Key Components of Spring Boot?
++ The key components of Spring Boot are listed below:
+
+1.Spring Boot starters
+2. Auto-configuration
+3. Spring Boot Actuator
+4. Spring Boot CLI
+5. Embedded Servers
+
+## Spring Annotations in Java
++ Spring provides a wide range of annotations for `dependency injection`, `component scanning`,` REST APIs`,` database access`, and `security`.
++ Here’s a categorized list of the most important Spring annotations`:
+
+#### 1️⃣ Core Spring Annotations (Configuration & Beans)
+|Annotation|	Description|
+|--------|---------------|
+| `@SpringBootApplication`	|Marks the main Spring Boot application class (combines` @Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan`).|
+|@Configuration|	Marks a class as a Spring configuration class (used for defining beans).|
+|@Bean|	Defines a Spring-managed bean inside a @Configuration class.|
+|@ComponentScan|	Enables scanning for components (@Component, @Service, @Repository).|
++ ✅ Example:
+```
+@SpringBootApplication
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+#### 2️⃣ Dependency Injection Annotations
+|Annotation	|Description|
+|----------|------------|
+|`@Autowired`|	Automatically injects dependencies.|
+|`@Qualifier`	|Used when multiple beans of the same type exist.|
+|`@Primary`	|Marks a bean as the default if multiple candidates exist.|
+|`@Value`|	Injects values from property files.\
+✅ Example:
+
+```
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
+}
+```
+#### 3️⃣ Spring MVC (Web) Annotations
+|Annotation	|Description|
+|-----------|------------|
+|@Controller|	Marks a class as a Spring MVC controller.|
+|@RestController|	Combines @Controller and @ResponseBody (used for REST APIs).|
+|@RequestMapping|	Maps web requests to controller methods.|
+|@GetMapping, @PostMapping, @PutMapping, @DeleteMapping	|Handles specific HTTP request types.|
+|@PathVariable|	Extracts values from the URL.|
+|@RequestParam|	Extracts query parameters.|
+|@RequestBody|	Maps the request body to a Java object.|
+✅ Example:
+```
+@RestController
+@RequestMapping("/api")
+public class UserController {
+    
+    @GetMapping("/user/{id}")
+    public String getUser(@PathVariable int id) {
+        return "User ID: " + id;
+    }
+}
+```
+#### 4️⃣ Spring Boot JPA (Database) Annotations
+|Annotation	|Description|
+|-----------|-----------|
+|@Entity|	Marks a class as a JPA entity (database table).|
+|@Table(name = "users")|	Specifies the table name for the entity.|
+|@Id	|Marks a field as the primary key.|
+|@GeneratedValue(strategy = GenerationType.IDENTITY)|	Auto-generates primary key values.|
+|@Column|	Defines column properties in the database.|
+|@Repository	|Marks a class as a DAO (Data Access Object).|
++ ✅ Example:
+
+```
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String name;
+}
+```
+#### 5️⃣ Spring Security Annotations
+|Annotation|	Description|
+|----------|-------------|
+|@EnableWebSecurity|	Enables Spring Security|
+|@PreAuthorize("hasRole('ADMIN')")|Restricts access based on roles.|
+|@Secured("ROLE_USER")|	Allows access only for users with a specific role.|
+✅ Example:
+```
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin")
+public String adminPage() {
+    return "Admin Page";
+}
+```
+#### 6️⃣ Transaction Management Annotations
+|Annotation	 | Description |
+|------------|-------------|
+|@Transactional|	Marks a method or class as transactional.|
+|@EnableTransactionManagement|	Enables transaction management in Spring.|
+
++ ✅ Example:
+```
+@Service
+public class AccountService {
+    
+    @Transactional
+    public void transferMoney(Long fromAccount, Long toAccount, double amount) {
+        // Money transfer logic
+    }
+}
+```
+#### 7️⃣ Spring Boot Miscellaneous Annotations
+|Annotation | 	Description |
+|-----------|----------------|
+|@CrossOrigin(origins = "http://localhost:3000")|	Allows CORS for REST APIs.|
+|@Scheduled(fixedRate = 5000)|	Runs a method every 5 seconds.|
+|@Lazy	|Delays bean initialization until needed.|
+|@Scope("prototype") |	Defines the scope of a Spring bean.|
+
++ ✅ Example:
+```
+@Scheduled(fixedRate = 5000)
+public void runTask() {
+    System.out.println("Task running every 5 seconds");
+}
+```
+### Conclusion
++ Spring annotations make it easy to build configurable, scalable, and maintainable applications. 🚀
+
+
+
+
+
+
+
+
+
