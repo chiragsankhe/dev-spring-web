@@ -293,7 +293,7 @@ public class MyApplication {
 |`@Autowired`|	Automatically injects dependencies.|
 |`@Qualifier`	|Used when multiple beans of the same type exist.|
 |`@Primary`	|Marks a bean as the default if multiple candidates exist.|
-|`@Value`|	Injects values from property files.\
+|`@Value`|	Injects values from property files.|
 ✅ Example:
 
 ```
@@ -646,5 +646,325 @@ docker run -p 8080:8080 myapp
 + ✅ `java -jar myapp.jar `(JAR File)
 + ✅ `docker run myapp` (Docker)
 
+## Spring Boot IOC (Inversion of Control)
 
+### What is IOC (Inversion of Control)?
++ Inversion of Control (IOC) is a design principle used in Spring Framework to manage `object creation` and `dependency injection`. Instead of an application manually creating and managing objects, Spring Container takes care of it.
+
+### How does IOC Work in Spring Boot?
++ Spring Boot uses `Spring Container` to implement IOC.
++  The container `creates`,` configures`, and` manages the lifecycle of beans (objects)`,` injecting dependencies` wherever required.
+
+### Key Concepts of IOC in Spring Boot:
++ `Spring Container`: The core of IOC, responsible for managing bean lifecycles.
+
++ `Beans`: Objects managed by Spring Container.
+
++ `Dependency Injection (DI)`: The process of injecting dependencies automatically.
+
+### Configuration Methods:
+
++ `XML` Configuration (not commonly used in Spring Boot)
+
++ `Annotation-Based` Configuration (`@Component`,` @Service`, `@Repository`,` @Controller`)
+
++ `Java-Based `Configuration (`@Bean`,` @Configuration`)
+
+### IOC in Action
+### IoC Using Annotations
+#### Simple Example of Spring IoC Using Annotations
+ +Let's take a very simple example to demonstrate Spring IoC (Inversion of Control) using annotations.
+
+#### Step 1: Create an Interface
+```
+public interface Animal {
+    void sound();
+}
+```
++ This is a simple interface with a method `sound()`.
+
+### Step 2: Create Implementations
+Dog Class
+```
+import org.springframework.stereotype.Component;
+
+@Component // Marks this class as a Spring Bean
+public class Dog implements Animal {
+    @Override
+    public void sound() {
+        System.out.println("Dog barks: Woof Woof!");
+    }
+}
+```
+Cat Class
+```
+import org.springframework.stereotype.Component;
+
+@Component // Marks this class as a Spring Bean
+public class Cat implements Animal {
+    @Override
+    public void sound() {
+        System.out.println("Cat meows: Meow Meow!");
+    }
+}
+```
++ `@Component` tells Spring that these classes should be managed as `Spring Beans`.
+
+### Step 3: Create a Zoo Class That Uses an Animal
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component // Marks this class as a Spring-managed Component
+public class Zoo {
+
+    private final Animal animal;
+
+    @Autowired // Injects a bean of type Animal
+    public Zoo(Animal animal) {
+        this.animal = animal;
+    }
+
+    public void makeSound() {
+        animal.sound();
+    }
+}
+```
++ `@Autowired`: Spring automatically injects an implementation of Animal (either `Dog `or `Cat`).
+
++ If multiple implementations exist, we need to `specify` which one to use with` @Qualifier` (not used here).
+
+
+### Step 4: Create the Main Application
+```
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication // Enables component scanning and auto-configuration
+public class IoCExampleApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(IoCExampleApplication.class, args);
+
+        // Get the Zoo bean from the Spring Context
+        Zoo zoo = context.getBean(Zoo.class);
+        
+        // Call the method
+        zoo.makeSound();
+    }
+}
+```
++ `@SpringBootApplication`: This is a shortcut for enabling Spring Boot `auto-configuration` and `component scanning`.
+
++ `ApplicationContext`: Manages all the `beans` and `dependencies`.
+
+### How Spring IoC Works Here?
++ Spring detects `@Component` classes (`Dog`, `Cat`, `Zoo`) and registers them as `beans`.
+
++ Spring automatically injects a bean of `Animal `into the` Zoo `class using `@Autowired`.
+
++ The `main()` method retrieves the` Zoo `bean and calls` makeSound()`, which calls `sound()` on the injected Animal bean.
+
++ If multiple beans of Animal exist (`Dog` & `Cat`), Spring might throw an `error` unless we specify which one to use.
+
+Output (if Spring picks Dog)
+```
+Dog barks: Woof Woof!
+```
++ OR
++ If Spring picks Cat:
+```
+Cat meows: Meow Meow!
+```
+### How to Specify Which Bean to Use?
++ If you have multiple beans of the same type, use `@Qualifier`:
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Zoo {
+
+    private final Animal animal;
+
+    @Autowired
+    public Zoo(@Qualifier("dog") Animal animal) { // Specify which bean to use
+        this.animal = animal;
+    }
+
+    public void makeSound() {
+        animal.sound();
+    }
+}
+```
++ Now, Spring will always inject the Dog implementation.
+
+### Conclusion
++ This is a very simple Spring IoC example that: 
++ ✅ Uses `@Component` for automatic bean detection.
++ ✅ Uses `@Autowired` for dependency injection.
++ ✅ Demonstrates how Spring manages objects instead of using new.
+
+## 2. Java-Based Configuration (Using @Bean)
+Instead of `@Component`, we can explicitly define beans using `@Bean`.
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Engine engine() {
+        return new Engine();
+    }
+
+    @Bean
+    public Car car(Engine engine) {
+        return new Car(engine);
+    }
+}
+```
+### Benefits of IOC in Spring Boot
++ ✔ `Loose Coupling` – Objects depend on abstractions, not concrete implementations.
++ ✔ `Easier Testing` – Dependencies can be injected via mocks.
++ ✔ `Better Maintainability` – Dependencies are managed automatically.
++ ✔ `Improved Modularity` – Components can be replaced easily.
+
+### Understanding Spring IoC (Inversion of Control) with an Example
++ Spring IoC (Inversion of Control) is a design principle where the control of `object creation `and `dependency management `is transferred from the application code to the Spring Container.
++  This helps in reducing tight coupling between components and enhances `flexibility`.
+
+#### Let's create a Spring IoC example with all required annotations and then explain it step by step.
+
+### Example: Dependency Injection Using Spring IoC
++ We'll create a basic Spring Boot application that demonstrates IoC using annotations like `@Component`, `@Autowired`, `@Service`, and` @Configuration`.
+
+### Step 1: Create a Spring Boot Project
++ If you are using Spring Boot, you can create a simple project with Spring Boot dependencies.
+
+### 1. Create a Service Interface
+```
+public interface MessageService {
+    void sendMessage(String message);
+}
+```
+Here, we define an interface` MessageService` with a method `sendMessage`.
+
+### 2. Implement the Service Interface
+```
+import org.springframework.stereotype.Service;
+
+@Service // Marks this class as a Spring-managed service
+public class EmailService implements MessageService {
+    
+    @Override
+    public void sendMessage(String message) {
+        System.out.println("Email sent: " + message);
+    }
+}
+```
++ `@Service`: Indicates that `EmailService` is a service component and should be managed by the` Spring container`.
+
+### 3. Create Another Implementation
+```
+import org.springframework.stereotype.Service;
+
+@Service // This class is also managed by Spring
+public class SMSService implements MessageService {
+
+    @Override
+    public void sendMessage(String message) {
+        System.out.println("SMS sent: " + message);
+    }
+}
+```
+Now, we have two implementations (`EmailService` and `SMSService`) of `MessageService`.
+
+### 4. Create a Component That Uses the Service
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component // Marking this class as a Spring-managed component
+public class NotificationSender {
+
+    private final MessageService messageService;
+
+    @Autowired // Automatically injects a MessageService implementation
+    public NotificationSender(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    public void send(String message) {
+        messageService.sendMessage(message);
+    }
+}
+```
++ `@Autowired` tells Spring to inject a dependency of type `MessageService` into` NotificationSender`.
+
++ Spring will automatically choose one of the implementations (EmailService or SMSService).
+
+### 5. Configure Which Implementation to Use
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean // Explicitly defining a bean
+    public MessageService messageService() {
+        return new EmailService(); // You can change this to SMSService if needed
+    }
+}
+```
++ `@Configuration`: Indicates that this class contains Spring bean definitions.
+
++ `@Bean`: Explicitly defines a` Spring-managed bean.`
+
++ Now, Spring will use EmailService as the MessageService implementation.
+
+### 6. Run the Application
+```
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class IoCExampleApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(IoCExampleApplication.class, args);
+
+        // Get the NotificationSender bean from the context
+        NotificationSender sender = context.getBean(NotificationSender.class);
+        
+        // Send a message
+        sender.send("Hello, Spring IoC!");
+    }
+}
+```
+### 🔹 How IoC Works in This Example
++ Spring creates and `manages `objects instead of us manually instantiating them using new keyword.
+
++ The `@Service ` annotation allows Spring to automatically detect the `EmailService` and` SMSService` classes.
+
++ The `@Autowired` annotation injects the appropriate implementation of `MessageService` into `NotificationSender`.
+
+ +The `@Configuration` class (AppConfig) explicitly defines which implementation to use.
+
+## 🔹 How to Make the Code Unusable?
+If we remove or misuse IoC annotations, the code won’t work properly:
++ Removing @Autowired in NotificationSender
+
++ Spring will not know how to inject MessageService, leading to a NullPointerException.
+
++ Not marking EmailService and SMSService with @Service
+
++ Spring won’t detect these classes, and dependency injection will fail.
+
++ Not defining a bean explicitly (@Bean) or removing @Configuration
+
++ If there are multiple implementations, Spring will not know which one to use, causing an error.
 
