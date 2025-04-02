@@ -1620,3 +1620,122 @@ public class AppConfig {
 + 🔹 Use @Lazy when a bean is rarely used or resource-heavy.
 + 🔹 Avoid @Lazy for critical or frequently used beans.
 
+## @Beans 
+### Spring Boot Beans Overview
+ + In Spring Boot, a bean is an object that is managed by the Spring `Inversion of Control (IoC)` container. 
+ + Beans are created, wired, and managed by Spring.
+ + You define beans using annotations like `@Component`, `@Service`, `@Repository`, or by explicitly defining them in a configuration class using `@Bean`.
+
+#### Bean Scopes in Spring Boot
++ Spring provides different scopes for beans, but the most common are:
+
++ `Singleton` (Default Scope) – Only one instance of the bean is created for the entire Spring container.
+
++ `Prototype` – A new instance is created every time it is requested.
+
++ `Request` – A new instance is created for each HTTP request (used in web applications).
+
++ `Session` – A new instance is created for each HTTP session.
+
+### What is Singleton in Spring Boot?
++ Singleton is the default scope for beans in Spring Boot.
+
++ This means that only one instance of the bean is created and shared across the entire application context.
+
++ Even if multiple objects request the bean, they all receive the same instance.
+
+Example of Singleton Bean
+```
+import org.springframework.stereotype.Component;
+
+@Component  // This bean is Singleton by default
+public class SingletonBean {
+    public SingletonBean() {
+        System.out.println("SingletonBean instance created!");
+    }
+}
+```
+### Using the Bean in Another Class
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    @Autowired
+    private SingletonBean singletonBean;
+}
+```
+No matter how many times MyService requests `SingletonBean`, the same instance will be provided.
+
+### How to Change the Scope to Prototype?
++ If you want a new instance every time the bean is requested, you can change its scope:
+```
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")  // Creates a new instance every time
+public class PrototypeBean {
+    public PrototypeBean() {
+        System.out.println("PrototypeBean instance created!");
+    }
+}
+```
+
+## beans lifecycle 
+
++ The lifecycle of a Spring Bean consists of several stages, from creation to destruction. Spring provides hooks to customize the behavior at different stages.
+
+### 1️⃣ Bean Lifecycle Stages in Spring Boot
++ Instantiation – Spring creates an instance of the bean.
+
++ Populate Properties – Spring injects dependencies into the bean.
+
++ Post-Initialization (Bean Initialization Phase)
+
++ Any custom initialization logic can be executed here.
+
++ Bean is Ready to Use – The bean is available for use in the application.
+
++ Pre-Destroy (Cleanup Phase) – When the application shuts down, Spring allows custom cleanup.
+
++ Destruction – The bean is removed from the container.
+
+### 2️⃣ Lifecycle Methods in Spring
+Spring provides different ways to hook into the bean lifecycle:
+
+### A. Using @PostConstruct and @PreDestroy (Recommended)
+```
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyBean {
+
+    public MyBean() {
+        System.out.println("1️⃣ Constructor: Bean instance created!");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("2️⃣ @PostConstruct: Bean is initialized.");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("3️⃣ @PreDestroy: Bean is about to be destroyed.");
+    }
+}
+```
+🔹 Output when the application starts:
+```
+1️⃣ Constructor: Bean instance created!
+2️⃣ @PostConstruct: Bean is initialized.
+```
+🔹 Output when the application stops:
+```
+3️⃣ @PreDestroy: Bean is about to be destroyed.
+```
