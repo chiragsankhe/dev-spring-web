@@ -1178,17 +1178,15 @@ public class BeanLister implements CommandLineRunner {
 
 + Use Setter Injection only for optional dependencies.
 
+##  @Qualifier 
+#### Understanding @Qualifier in Spring
++ The @Qualifier annotation in Spring is used to resolve `ambiguity` when multiple beans of the same type exist.
++  It tells Spring which specific bean to inject.
 
-Understanding @Qualifier in Spring
-The @Qualifier annotation in Spring is used to resolve ambiguity when multiple beans of the same type exist. It tells Spring which specific bean to inject.
-
-🔍 Why Do We Need @Qualifier?
-Scenario Without @Qualifier
-If we have multiple implementations of an interface, Spring doesn't know which one to inject.
-
-java
-Copy
-Edit
+### 🔍 Why Do We Need @Qualifier?
+#### Scenario Without @Qualifier
++ If we have multiple implementations of an interface, Spring doesn't know which one to inject.
+```
 @Component
 public class CricketCoach implements Coach {
     @Override
@@ -1204,11 +1202,9 @@ public class TennisCoach implements Coach {
         return "Practice serving for 30 minutes.";
     }
 }
-Now, if we inject Coach in a controller or service without @Qualifier, Spring will throw an error:
-
-java
-Copy
-Edit
+```
++ Now, if we inject Coach in a controller or service without `@Qualifier`, Spring will throw an error:
+```
 @RestController
 public class DemoController {
 
@@ -1224,24 +1220,21 @@ public class DemoController {
         return coach.getDailyWorkout();
     }
 }
-Spring Error: "No qualifying bean of type Coach available"
-Why? Because both CricketCoach and TennisCoach implement Coach.
+```
++ `Spring Error`: "No qualifying bean of type Coach available"
++ Why? Because both CricketCoach and TennisCoach implement Coach.
 
-✅ Fixing Ambiguity Using @Qualifier
-We explicitly tell Spring which bean to inject.
+#### ✅ Fixing Ambiguity Using @Qualifier
+ +We explicitly tell Spring which bean to inject.
 
-1️⃣ Naming Beans with @Component
-By default, Spring assigns bean names in lowercase of the class name:
+#### 1️⃣ Naming Beans with @Component
++ By default, Spring assigns bean names in `lowercase` of the class name:
 
-CricketCoach → cricketCoach
++ `CricketCoach` → `cricketCoach`
 
-TennisCoach → tennisCoach
-
-If we want to give a custom name, we can specify it in @Component:
-
-java
-Copy
-Edit
++ `TennisCoach` → `tennisCoach`
+If we want to give a custom name, we can specify it in `@Component`:
+```
 @Component("cricketCoach")  // Custom bean name
 public class CricketCoach implements Coach {
     @Override
@@ -1249,6 +1242,8 @@ public class CricketCoach implements Coach {
         return "Practice fast bowling for 15 minutes.";
     }
 }
+```
+```
 
 @Component("tennisCoach")
 public class TennisCoach implements Coach {
@@ -1257,10 +1252,9 @@ public class TennisCoach implements Coach {
         return "Practice serving for 30 minutes.";
     }
 }
-2️⃣ Using @Qualifier in the Controller
-java
-Copy
-Edit
+```
+### 2️⃣ Using @Qualifier in the Controller
+```
 @RestController
 @RequestMapping("/api")
 public class DemoController {
@@ -1276,27 +1270,26 @@ public class DemoController {
         return coach.getDailyWorkout();
     }
 }
-Now, Spring will inject CricketCoach into DemoController.
-If we want to inject TennisCoach, we change @Qualifier("tennisCoach").
+```
++ Now, Spring will inject `CricketCoach `into` DemoController`.
++ If we want to inject `TennisCoach`, we change `@Qualifier("tennisCoach")`.
 
-⚡ Rules for Using @Qualifier
-The name in @Qualifier must match the bean name exactly.
+### ⚡ Rules for Using @Qualifier
++ The name in @Qualifier must match the bean name exactly.
 
-If @Component("cricketCoach") → use @Qualifier("cricketCoach")
++ If` @Component("cricketCoach") `→ use `@Qualifier("cricketCoach")`
 
-If @Component("CricketCoach") → use @Qualifier("CricketCoach")
++ If` @Component("CricketCoach")` → use `@Qualifier("CricketCoach")`
 
-If @Component has no name → Spring defaults to "cricketCoach" (lowercase first letter)
++ If @Component has no name → Spring defaults to "cricketCoach" (`lowercase first letter`)
 
-Case sensitivity matters when specifying bean names in @Qualifier.
++ Case sensitivity matters when specifying bean names in @Qualifier.
 
-If only one bean exists, @Qualifier is not needed.
++ If only one bean exists, `@Qualifier` is `not needed`.
 
-📌 Example: Constructor Injection vs. Setter Injection
-1️⃣ Constructor Injection with @Qualifier
-java
-Copy
-Edit
+### 📌 Example: Constructor Injection vs. Setter Injection
+#### 1️⃣ Constructor Injection with @Qualifier
+```
 @RestController
 @RequestMapping("/api")
 public class DemoController {
@@ -1312,10 +1305,9 @@ public class DemoController {
         return coach.getDailyWorkout();
     }
 }
-2️⃣ Setter Injection with @Qualifier
-java
-Copy
-Edit
+```
+#### 2️⃣ Setter Injection with @Qualifier
+```
 @RestController
 @RequestMapping("/api")
 public class DemoController {
@@ -1332,50 +1324,49 @@ public class DemoController {
         return coach.getDailyWorkout();
     }
 }
-Both methods work the same! Constructor injection is preferred for required dependencies.
+```
++ Both methods work the same! Constructor injection is preferred for required dependencies.
 
-🔍 What Happens Internally?
-Spring scans for components (@Component) in the specified package.
+### 🔍 What Happens Internally?
+Spring scans for components `(@Component)` in the specified `package`.
 
-It creates beans:
++ It creates beans:
 
-CricketCoach → cricketCoach
++ CricketCoach → cricketCoach
 
-TennisCoach → tennisCoach
++ TennisCoach → tennisCoach
 
-When injecting Coach, Spring sees multiple choices.
++ When injecting Coach, Spring sees multiple choices.
 
-@Qualifier("cricketCoach") tells Spring to inject CricketCoach bean.
++ `@Qualifier("cricketCoach")` tells Spring to inject CricketCoach bean.
 
-✅ Key Takeaways
-Use @Qualifier when multiple beans exist for the same type.
+### ✅ Key Takeaways
++ Use `@Qualifier` when multiple beans exist for the same type.
 
-Bean names are lowercase by default (TennisCoach → "tennisCoach").
++ Bean names are `lowercase by default` (TennisCoach → "tennisCoach").
 
-Use @Qualifier("beanName") exactly as defined in @Component("beanName").
++ Use @Qualifier("beanName") exactly as defined in @Component("beanName").
 
-Works with both constructor and setter injection.
-
-
++ Works with both constructor and setter injection.
 
 
-The @Primary annotation in Spring is used to indicate which bean should be given preference when multiple beans of the same type are available in the Spring container. It helps in resolving ambiguity when dependency injection occurs.
+## @Primary annatation 
 
-Example: Using @Primary Annotation in Spring Boot
-Scenario: Multiple Implementations of an Interface
-Let's say we have an interface PaymentService with two implementations: CreditCardPaymentService and UPIPaymentService. We use @Primary to give preference to CreditCardPaymentService.
++ The `@Primary` annotation in Spring is used to indicate which bean should be given `preference` when multiple beans of the same type are available in the Spring container.
++ It helps in resolving ambiguity when dependency injection occurs.
 
-Step 1: Define an Interface
-java
-Copy
-Edit
++ `Example:` Using @Primary Annotation in Spring Boot
++ `Scenario:` Multiple Implementations of an Interface
++ Let's say we have an interface `PaymentService` with two implementations: `CreditCardPaymentService `and `UPIPaymentService`. We use `@Primary ` to give preference to `CreditCardPaymentService`.
+
+### Step 1: Define an Interface
+```
 public interface PaymentService {
     void processPayment(double amount);
 }
-Step 2: Create Two Implementations
-java
-Copy
-Edit
+```
+### Step 2: Create Two Implementations
+```
 import org.springframework.stereotype.Service;
 
 @Service
@@ -1386,9 +1377,8 @@ public class CreditCardPaymentService implements PaymentService {
         System.out.println("Processing credit card payment of ₹" + amount);
     }
 }
-java
-Copy
-Edit
+```
+```
 import org.springframework.stereotype.Service;
 
 @Service
@@ -1398,10 +1388,9 @@ public class UPIPaymentService implements PaymentService {
         System.out.println("Processing UPI payment of ₹" + amount);
     }
 }
-Step 3: Inject the Bean into a Controller
-java
-Copy
-Edit
+```
+### Step 3: Inject the Bean into a Controller
+````
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1423,26 +1412,211 @@ public class PaymentController {
         return "Payment processed successfully!";
     }
 }
-Explanation:
-There are two beans of PaymentService type: CreditCardPaymentService and UPIPaymentService.
+```
+#### Explanation:
++ There are two beans of PaymentService type: `CreditCardPaymentService` and ` UPIPaymentService`.
 
-The @Primary annotation on CreditCardPaymentService makes it the default choice when PaymentService is injected.
++ The `@Primary` annotation on `CreditCardPaymentService` makes it the `default choice` when PaymentService is injected.
 
-When we call makePayment(), it will use CreditCardPaymentService by default.
++ When we call `makePayment()`, it will use `CreditCardPaymentService` by default.
 
-Output (If accessed via http://localhost:8080/pay?amount=1000):
-nginx
-Copy
-Edit
-Processing credit card payment of ₹1000.0
-What If We Want to Use UPI Instead?
-If we want to override the @Primary behavior, we can use @Qualifier("UPIPaymentService") in the constructor:
++ Output (If accessed via `http://localhost:8080/pay?amount=1000`):
 
-java
-Copy
-Edit
++ Processing credit card payment of ₹1000.0
+#### What If We Want to Use UPI Instead?
++ If we want to override the @Primary behavior, we can use `@Qualifier("UPIPaymentService")` in the constructor:
+```
 @Autowired
 public PaymentController(@Qualifier("UPIPaymentService") PaymentService paymentService) {
     this.paymentService = paymentService;
 }
-Now, UPIPaymentService will be used instead.
+```
++ Now, `UPIPaymentService` will be used instead.
+
+
+
+
+
+## @Lazy Annotation in Spring Boot – Detailed Explanation
++ The `@Lazy` annotation in Spring Boot is used to delay the initialization of a Spring bean until it is actually needed.
++  By default, Spring initializes all beans at `startup`, which can `slow down the application`, especially when there are many beans or `resource-heavy objects`.
++ `@Lazy` helps optimize performance by loading beans only when they are required.
+
+### 1️⃣ How Spring Loads Beans by Default?
++ By default, Spring follows `Eager Initialization`, meaning:
+
++ All singleton beans are created and initialized at the time of application startup.
+
++ This ensures that dependencies are resolved in advance but increases startup time.
+
++ If a bean is never used, it is still created, wasting memory.
+
+### 🔹 Example (Without @Lazy)
+```
+import org.springframework.stereotype.Service;
+
+@Service
+public class HeavyService {
+    
+    public HeavyService() {
+        System.out.println("HeavyService Initialized!");
+    }
+
+    public void performTask() {
+        System.out.println("Performing a heavy task...");
+    }
+}
+```
+Output at Application Startup
+```
+HeavyService Initialized!
+Application started successfully!
+```
++ Even if the `HeavyService` is never used, it gets initialized at startup.
+
+### 2️⃣ How @Lazy Works?
++ When we use @Lazy, Spring defers the creation of the bean until it is `actually needed`.
+
+### 🔹 Example (With @Lazy)
+```
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+@Service
+@Lazy  // Bean will be initialized only when needed
+public class HeavyService {
+    
+    public HeavyService() {
+        System.out.println("HeavyService Initialized!");
+    }
+
+    public void performTask() {
+        System.out.println("Performing a heavy task...");
+    }
+}
+```
+```
+Behavior at Startup
+Application started successfully
+```
+### ✅ The HeavyService bean is NOT initialized at startup.
+
++ When we call a method that requires HeavyService
++ If we have a controller like this:
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HeavyController {
+
+    private final HeavyService heavyService;
+
+    @Autowired
+    public HeavyController(HeavyService heavyService) {
+        this.heavyService = heavyService;
+    }
+
+    @GetMapping("/task")
+    public String executeTask() {
+        heavyService.performTask();
+        return "Task executed!";
+    }
+}
+```
++ Now, if we access `http://localhost:8080/task`, the console output will be:
+```
+HeavyService Initialized!
+Performing a heavy task...
+```
++ 📌 The bean is created only when `/task` is called, `saving memory` and` improving startup time`.
+
+### 3️⃣ Where Can We Use @Lazy?
+#### ✅ Use @Lazy when:
++ ✔ The bean is rarely used or only needed in specific scenarios.
++ ✔ The bean has high resource consumption, like database connections, large objects, or third-party integrations.
++ ✔ You want to optimize application startup time.
+
+### 🚫 Do NOT use @Lazy when:
++ ❌ The bean is frequently used in the application.
++ ❌ The bean is a critical dependency that must be available at startup (e.g., Security configurations, database connections).
+
+### 4️⃣ @Lazy at Class and Bean Level
+#### 🔹 Applying @Lazy at the Class Level
+If you annotate a class with @Lazy, the whole bean will be lazily initialized:
+```
+@Service
+@Lazy
+public class ReportService {
+    public ReportService() {
+        System.out.println("ReportService Initialized!");
+    }
+}
+```
+#### 🔹 Applying @Lazy at the Bean Level
+You can also use @Lazy inside a configuration class:
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    @Lazy
+    public ReportService reportService() {
+        return new ReportService();
+    }
+}
+```
++ 📌 This ensures that ReportService is not created at startup but only when required.
+
+### 5️⃣ @Lazy with @Autowired Dependencies
++ By default, if a dependency is required in a constructor, Spring will create it at startup.
++ To make it lazy, we can explicitly mark it with @Lazy.
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+
+    private final PaymentService paymentService;
+
+    @Autowired
+    public OrderService(@Lazy PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+
+    public void processOrder() {
+        System.out.println("Processing order...");
+        paymentService.processPayment();
+    }
+}
+```
++ PaymentService is only initialized when` processOrder()` is called.
+
+### 6️⃣ @Lazy with @ComponentScan
++ We can apply @Lazy globally to all beans in a package:
+```
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "com.example", lazyInit = true)
+public class AppConfig {
+}
+```
++ 📌 Now, all beans in com.example will be lazily loaded.
+
+### 7️⃣ Key Takeaways
++ 🔹 By default, Spring beans are eagerly initialized at startup.
++ 🔹 @Lazy delays bean creation until first use, improving performance.
++ 🔹 It can be applied to classes, methods, or dependencies.
++ 🔹 Use @Lazy when a bean is rarely used or resource-heavy.
++ 🔹 Avoid @Lazy for critical or frequently used beans.
+
