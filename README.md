@@ -968,3 +968,481 @@ If we remove or misuse IoC annotations, the code won’t work properly:
 
 + If there are multiple implementations, Spring will not know which one to use, causing an error.
 
+## Constructor Injection vs Setter Injection in Spring Boot (Simple Explanation)
++ Spring Boot uses dependency injection to manage objects.
++ There are two main ways to inject dependencies into a class:
+
+#### Constructor Injection
+
+#### Setter Injection
+
+##### 1. What is Dependency Injection in Spring?
++ Spring Boot follows `Inversion of Control (IoC)`, meaning the framework controls the creation and management of objects instead of us manually creating them using `new` keyword.
+
+Instead of:
+```
+CarService carService = new CarService(new Engine());
+```
++ Spring automatically injects dependencies when needed.
+
+##### 2. Constructor Injection (Preferred)
+#### How it Works?
+
++ Spring scans for components (`@Component`, `@Service`, etc.).
+
++ Finds the constructor and checks required dependencies.
+
++ Creates the dependencies first (e.g., `Engine` object).
+
++ Passes the dependency into the constructor.
+
++ Stores the object in the Spring `container.`
+
+Example: Constructor Injection
+```
+import org.springframework.stereotype.Service;
+
+@Service // Tells Spring to create and manage this object
+public class CarService {
+    private final Engine engine;  // Dependency
+
+    // Constructor Injection
+    public CarService(Engine engine) {  
+        this.engine = engine;
+    }
+
+    public void startCar() {
+        engine.run();
+    }
+}
+```
+```
+import org.springframework.stereotype.Component;
+
+@Component // Marks Engine as a Spring-managed component
+public class Engine {
+    public void run() {
+        System.out.println("Engine is running...");
+    }
+}
+```
+#### What Happens Behind the Scenes?
++ Spring Boot Application Starts
+
++ It scans all classes for` @Component`,` @Service`, etc.
+
++ Finds `CarService `and `Engine`.
+
++ Spring Identifies Dependencies
+
++ `CarService` has a constructor with `Engine` as a parameter.
+
++ It sees that Engine is already available as a `@Component`.
+
++ Spring Creates Objects in Order
+
++ First, it creates` Engine` and stores it in its ApplicationContext (Spring Container).
+
++ Then, it calls new `CarService(engine)`, passing the created Engine instance.
+
++ `Object` is Ready to Use
+
++ Now, `CarService` can use `engine.run();` in `startCar().`
+
+#### Pros of Constructor Injection
++ ✅ Makes dependencies mandatory (cannot be null).
++ ✅ Supports immutability (uses final fields).
++ ✅ Easy to write unit tests (dependencies can be mocked).
+
+### 3. Setter Injection
+#### How it Works?
+
++ Spring scans and creates the object first without dependencies.
+
++ It calls the setter method to inject dependencies later.
+
++ This allows optional dependencies.
+
+Example: Setter Injection
+```
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Service
+public class CarService {
+    private Engine engine;  // No final keyword, can change
+
+    // Setter Injection
+    @Autowired  // Tells Spring to call this method for injection
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void startCar() {
+        engine.run();
+    }
+}
+```
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void run() {
+        System.out.println("Engine is running...");
+    }
+}
+```
+#### What Happens Behind the Scenes?
++ Spring Boot Application Starts
+
+ +It scans and finds `CarService `and `Engine.`
+
++ Spring Creates `CarService` First
+
++ It does not inject Engine yet.
+
++ Calls new CarService() with no parameters.
+
++ Spring Calls Setter Method
+
++ setEngine(Engine engine) is called automatically.
+
++ The Engine object is injected.
+
+### Pros of Setter Injection
++ ✅ Good for optional dependencies.
++ ✅ Allows changing dependencies at runtime.
+
+### Cons
++ ❌ Dependencies can be null if setter is not called.
++ ❌ Less secure (someone can overwrite dependencies).
+
+### 4. Behind-the-Scenes: ApplicationContext & Bean Lifecycle
++ Spring Boot manages all `objects` in an IoC container called `ApplicationContext`.
++ When the app starts, Spring follows these steps:
+
+#### Step 1: Component Scanning
++ Spring scans for` @Component`, `@Service`, and `@Repository` classes.
+
+#### Step 2: Bean Creation Order
++  `Constructor Injection`: Creates dependencies first.
+
++ `Setter Injection`: Creates the object first, then injects later.
+
+#### Step 3: Storing Beans in the Container
++ Spring stores these objects in the ApplicationContext.
+
+#### Step 4: Dependency Injection
++ Constructor Injection: Happens when the object is created.
+
++ Setter Injection: Happens after the object is created.
+
+#### 5. Debugging: How to Check Spring Beans?
++ To see how Spring injects dependencies, you can print all beans in the container:
+```
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BeanLister implements CommandLineRunner {
+    private final ApplicationContext context;
+
+    public BeanLister(ApplicationContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public void run(String... args) {
+        System.out.println("All Beans in Spring Context:");
+        for (String beanName : context.getBeanDefinitionNames()) {
+            System.out.println(beanName);
+        }
+    }
+}
+```
++ This will list all created objects and show that CarService and Engine exist.
+
+#### 6. When to Use Which?
+|Feature	|Constructor Injection	|Setter Injection|
+|-----------|-----------------------|----------------|
+|Dependency Required?|	Yes (Mandatory)|	No (Optional)|
+|Immutability|	Yes (final fields)|	No (Can Change)|
+|Best for	|Required dependencies	|Optional dependencies|
+|Spring Execution|	At object creation|	After object is created|
+|Testing	|Easier (Mocking in unit tests)|	Harder|
+
+### ✅ Recommended Approach
++ Use Constructor Injection for required dependencies (Best Practice ✅).
+
++ Use Setter Injection only for optional dependencies.
+
+
+Understanding @Qualifier in Spring
+The @Qualifier annotation in Spring is used to resolve ambiguity when multiple beans of the same type exist. It tells Spring which specific bean to inject.
+
+🔍 Why Do We Need @Qualifier?
+Scenario Without @Qualifier
+If we have multiple implementations of an interface, Spring doesn't know which one to inject.
+
+java
+Copy
+Edit
+@Component
+public class CricketCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice fast bowling for 15 minutes.";
+    }
+}
+
+@Component
+public class TennisCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice serving for 30 minutes.";
+    }
+}
+Now, if we inject Coach in a controller or service without @Qualifier, Spring will throw an error:
+
+java
+Copy
+Edit
+@RestController
+public class DemoController {
+
+    private final Coach coach;
+
+    // ❌ ERROR: Spring doesn't know whether to inject CricketCoach or TennisCoach
+    public DemoController(Coach coach) {
+        this.coach = coach;
+    }
+
+    @GetMapping("/workout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+Spring Error: "No qualifying bean of type Coach available"
+Why? Because both CricketCoach and TennisCoach implement Coach.
+
+✅ Fixing Ambiguity Using @Qualifier
+We explicitly tell Spring which bean to inject.
+
+1️⃣ Naming Beans with @Component
+By default, Spring assigns bean names in lowercase of the class name:
+
+CricketCoach → cricketCoach
+
+TennisCoach → tennisCoach
+
+If we want to give a custom name, we can specify it in @Component:
+
+java
+Copy
+Edit
+@Component("cricketCoach")  // Custom bean name
+public class CricketCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice fast bowling for 15 minutes.";
+    }
+}
+
+@Component("tennisCoach")
+public class TennisCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice serving for 30 minutes.";
+    }
+}
+2️⃣ Using @Qualifier in the Controller
+java
+Copy
+Edit
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+
+    private final Coach coach;
+
+    public DemoController(@Qualifier("cricketCoach") Coach coach) {  // ✅ Specify bean name
+        this.coach = coach;
+    }
+
+    @GetMapping("/workout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+Now, Spring will inject CricketCoach into DemoController.
+If we want to inject TennisCoach, we change @Qualifier("tennisCoach").
+
+⚡ Rules for Using @Qualifier
+The name in @Qualifier must match the bean name exactly.
+
+If @Component("cricketCoach") → use @Qualifier("cricketCoach")
+
+If @Component("CricketCoach") → use @Qualifier("CricketCoach")
+
+If @Component has no name → Spring defaults to "cricketCoach" (lowercase first letter)
+
+Case sensitivity matters when specifying bean names in @Qualifier.
+
+If only one bean exists, @Qualifier is not needed.
+
+📌 Example: Constructor Injection vs. Setter Injection
+1️⃣ Constructor Injection with @Qualifier
+java
+Copy
+Edit
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+
+    private final Coach coach;
+
+    public DemoController(@Qualifier("tennisCoach") Coach coach) {  // ✅ Inject TennisCoach
+        this.coach = coach;
+    }
+
+    @GetMapping("/workout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+2️⃣ Setter Injection with @Qualifier
+java
+Copy
+Edit
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+
+    private Coach coach;
+
+    @Autowired
+    public void setCoach(@Qualifier("cricketCoach") Coach coach) {  // ✅ Inject CricketCoach
+        this.coach = coach;
+    }
+
+    @GetMapping("/workout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+Both methods work the same! Constructor injection is preferred for required dependencies.
+
+🔍 What Happens Internally?
+Spring scans for components (@Component) in the specified package.
+
+It creates beans:
+
+CricketCoach → cricketCoach
+
+TennisCoach → tennisCoach
+
+When injecting Coach, Spring sees multiple choices.
+
+@Qualifier("cricketCoach") tells Spring to inject CricketCoach bean.
+
+✅ Key Takeaways
+Use @Qualifier when multiple beans exist for the same type.
+
+Bean names are lowercase by default (TennisCoach → "tennisCoach").
+
+Use @Qualifier("beanName") exactly as defined in @Component("beanName").
+
+Works with both constructor and setter injection.
+
+
+
+
+The @Primary annotation in Spring is used to indicate which bean should be given preference when multiple beans of the same type are available in the Spring container. It helps in resolving ambiguity when dependency injection occurs.
+
+Example: Using @Primary Annotation in Spring Boot
+Scenario: Multiple Implementations of an Interface
+Let's say we have an interface PaymentService with two implementations: CreditCardPaymentService and UPIPaymentService. We use @Primary to give preference to CreditCardPaymentService.
+
+Step 1: Define an Interface
+java
+Copy
+Edit
+public interface PaymentService {
+    void processPayment(double amount);
+}
+Step 2: Create Two Implementations
+java
+Copy
+Edit
+import org.springframework.stereotype.Service;
+
+@Service
+@Primary  // This bean will be preferred when injected
+public class CreditCardPaymentService implements PaymentService {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Processing credit card payment of ₹" + amount);
+    }
+}
+java
+Copy
+Edit
+import org.springframework.stereotype.Service;
+
+@Service
+public class UPIPaymentService implements PaymentService {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Processing UPI payment of ₹" + amount);
+    }
+}
+Step 3: Inject the Bean into a Controller
+java
+Copy
+Edit
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class PaymentController {
+
+    private final PaymentService paymentService;
+
+    @Autowired
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+
+    @GetMapping("/pay")
+    public String makePayment(@RequestParam double amount) {
+        paymentService.processPayment(amount);
+        return "Payment processed successfully!";
+    }
+}
+Explanation:
+There are two beans of PaymentService type: CreditCardPaymentService and UPIPaymentService.
+
+The @Primary annotation on CreditCardPaymentService makes it the default choice when PaymentService is injected.
+
+When we call makePayment(), it will use CreditCardPaymentService by default.
+
+Output (If accessed via http://localhost:8080/pay?amount=1000):
+nginx
+Copy
+Edit
+Processing credit card payment of ₹1000.0
+What If We Want to Use UPI Instead?
+If we want to override the @Primary behavior, we can use @Qualifier("UPIPaymentService") in the constructor:
+
+java
+Copy
+Edit
+@Autowired
+public PaymentController(@Qualifier("UPIPaymentService") PaymentService paymentService) {
+    this.paymentService = paymentService;
+}
+Now, UPIPaymentService will be used instead.
