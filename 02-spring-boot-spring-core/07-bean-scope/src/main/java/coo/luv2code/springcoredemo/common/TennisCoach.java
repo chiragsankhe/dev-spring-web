@@ -1,0 +1,17 @@
+package coo.luv2code.springcoredemo.common;
+import org.springframework.stereotype.Component;
+
+@Component
+public  class TennisCoach implements Coach{
+
+    public TennisCoach()
+    {
+        System.out.println("in constructor : "+ getClass().getSimpleName());
+    }
+    @Override
+    public String getDailyWorkout()
+    {
+        return "do daily 1h practice in tennis coach";
+    }
+
+}
