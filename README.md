@@ -29,3 +29,43 @@
 
 + Data storage in NoSQL databases (e.g., MongoDB)
 
+### ✅ JSON Value
++ In `JSON`, a value can be one of the following types:
+
+|Type	|Example|
+|-----|--------|
+|String	"Prachi"
+|Number	|22, 3.14, -5|
+|Boolean|	true or false|
+|Object	|{ "name": "Prachi" }|
+|Array	|[ "Java", "SQL", "React" ]|
+|null	|null|
+### 🔎 Example:
+```
+{
+  "name": "Prachi",          // String value
+  "age": 22,                 // Number value
+  "isStudent": false,        // Boolean value
+  "skills": ["Java", "SQL"], // Array value
+  "details": {               // Object value
+    "city": "Boisar",
+    "country": "India"
+  },
+  "graduated": null          // Null value
+}
+```
+
+
+
+
+
+
+
+You said:
+i m chirag sankhe not prachi 
+
+
+ChatGPT said:
+Memory Updated
+
+
