@@ -123,7 +123,7 @@ public User getUser() {
 #### 📘 What are MIME Content Types?
 + MIME `(Multipurpose Internet Mail Extensions) ` Content Types tell the `browser` or` server`:
 
-###  What is Postman?
+##  What is Postman?
 + Postman is a `free API testing tool` that lets you:
 
 + Send HTTP requests (`GET`,` POST`,` PUT`, `DELETE`)
@@ -198,6 +198,48 @@ public ResponseEntity<String> createUser(@RequestBody User user) {
 + Test that in Postman with JSON body 👆
 
 
+### 💡 What is a @RestController in Spring Boot?
++ `@RestController ` is a special Spring Boot annotation used to create RESTful web services (APIs).
+
+### ✅ It tells Spring:
++ “This class will handle HTTP requests (like `GET`,` POST` ,` PUT` , ` DELETE`), and whatever this class returns should be sent directly to the client as the HTTP response body.”
+
+### 🔧 Internally, it’s the same as:
+```
+@Controller
+@ResponseBody
+```
++ So, it doesn’t return `HTML` pages like traditional web apps. It returns:
+
++ String
+
++ JSON
+
++ XML
+
++ or any other raw data
+
+### 📦 Example:
+```sh
+@RestController
+public class MyController {
+
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello Chirag!"; // returned directly as HTTP response body
+    }
+}
+```
++ If you open `http://localhost:8080/hello` , you'll see:
+```
+Hello Chirag!
+```
+### 📌 Why use @RestController?
+|Feature	|Benefit|
+|--------|-------|
+|Simpler API development	|No need for @ResponseBody|
+|Lightweight|	Ideal for frontend/backend projects|
+|Works with JSON easily	|Integrates well with @RequestBody and Jackson|
 
 
 
