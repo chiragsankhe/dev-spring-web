@@ -198,7 +198,7 @@ public ResponseEntity<String> createUser(@RequestBody User user) {
 + Test that in Postman with JSON body 👆
 
 
-### 💡 What is a @RestController in Spring Boot?
+## 💡 What is a @RestController in Spring Boot?
 + `@RestController ` is a special Spring Boot annotation used to create RESTful web services (APIs).
 
 ### ✅ It tells Spring:
@@ -241,6 +241,93 @@ Hello Chirag!
 |Lightweight|	Ideal for frontend/backend projects|
 |Works with JSON easily	|Integrates well with @RequestBody and Jackson|
 
+
+## 🔧 What is @RequestMapping?
++ `@RequestMapping ` is used to map web requests to specific Java methods or classes.
+
+### It tells Spring:
+
++ `“When a request comes to this URL,` call this method.”
+
+### 🔧 Where can it be used?
++ `On a class ` – to define a base URL path
+
++ `On a method ` – to handle a specific request
+
+
+
+✅ You can use it at two levels:
+1. Class Level:
+```sh
+@RestController
+@RequestMapping("/api")
+public class MyController {
+    // all URLs here will start with /api
+}
+```
+2. Method Level:
+```sh
+@GetMapping("/hello")
+public String sayHello() {
+    return "Hello Chirag!";
+}
+```sh
++ You can also use `@RequestMapping(method = RequestMethod.GET)`  but`  @GetMapping`  is a shortcut for that.
+
+📘 Example with @RequestMapping:
+```sh
+@RestController
+@RequestMapping("/users") // base URL
+public class UserController {
+
+    @RequestMapping("/info") // GET by default
+    public String getUserInfo() {
+        return "User info";
+    }
+}
+```
+✅ URL:
++ `http://localhost:8080/users/info`  → returns "User info"
+
+### ✨ Flexible: You can customize a lot!
+```sh
+@RequestMapping(
+    value = "/save",
+    method = RequestMethod.POST,
+    consumes = "application/json",
+    produces = "application/json"
+)
+```
+
+### 🛠️ Parameters @RequestMapping can accept:
+|Parameter|	Purpose|
+|---------|--------|
+|`value or path`	|URL path(s)|
+|`method`| 	HTTP method (GET, POST, etc.)|
+|`produces` |	Content type returned (e.g., JSON)|
+|`consumes`	|Content type expected from the request|
+|`headers`|	Match specific headers|
+|`params`	|Match specific query parameters|
+
+### ⚡ Shortcut Annotations (Recommended)
+Spring Boot provides easier alternatives:
+
+|Old (@RequestMapping)	|New (Shortcut)|
+|---------------------|----------------|
+|@RequestMapping(method = GET)	|@GetMapping|
+|@RequestMapping(method = POST)	|@PostMapping|
+|@RequestMapping(method = PUT)	|@PutMapping|
+|@RequestMapping(method = DELETE)	|@DeleteMapping|
+
+So now you can use `@RequestMapping ` for flexibility or use `@GetMapping1` ,` @PostMapping` , etc., for simplicity 🚀
+
+
+### 🆚 @GetMapping vs @RequestMapping
+|@RequestMapping|	@GetMapping, @PostMapping, etc.|
+|---------------|--------------------------------|
+|More flexible, supports all methods|Shortcut for specific methods
+|Slightly more verbose	|Cleaner and simpler|
+|Used in older Spring versions too|	Recommended in modern Spring Boot|
 
 
 
