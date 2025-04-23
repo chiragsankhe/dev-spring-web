@@ -590,7 +590,8 @@ public class StudentRestExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
-}```
+}
+```
 ### 🧠 Why it's important:
 + Prevents app crashes
 
