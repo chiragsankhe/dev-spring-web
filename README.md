@@ -330,6 +330,183 @@ So now you can use `@RequestMapping ` for flexibility or use `@GetMapping1` ,` @
 |Used in older Spring versions too|	Recommended in modern Spring Boot|
 
 
+### 🔄 How to Convert JSON into a Java POJO
+#### 📌 Step 1: Understand the JSON Structure
+Let’s say you have this JSON:
+```sh
+{
+  "id": 101,
+  "name": "Chirag Sankhe",
+  "email": "chirag@example.com"
+}
+```
+This JSON represents a user with 3 properties: `id` ,` name` ,and ` email` .
+
+#### 📌 Step 2: Create a Java POJO Class
+We create a class in Java with the same fields as the JSON keys.
+```sh
+public class User {
+    private int id;
+    private String name;
+    private String email;
+
+    // No-arg constructor
+    public User() {}
+
+    // Getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+```
+#### 📌 Step 3: Use a Library like Jackson to Map JSON to the POJO
+Add Jackson dependency (if using Maven):
+```sh
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version>
+</dependency>
+```
+Then in your Java code:
+```sh
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String json = "{\"id\":101,\"name\":\"Chirag Sankhe\",\"email\":\"chirag@example.com\"}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        User user = mapper.readValue(json, User.class);
+
+        System.out.println("Name: " + user.getName());
+    }
+}
+```
+#### ✅ Summary for Interview or Explanation:
++ To convert JSON into a Java POJO:
+
++ Analyze the JSON keys and types.
+
++ Create a Java class (POJO) with matching fields, constructors, and getters/setters.
+
++ Use a library like Jackson to deserialize the JSON into the Java object.
 
 
 
+## REST path variable 
+
+
+### 📁 File: Student.java (POJO)
+#### ✅ Purpose:
++ This is a Plain Old Java Object (POJO) used to represent a student with a first name and last name.
+
+👇 Code Breakdown:
+```sh
+public class Student {
+    private String firstname;
+    private String lastname;
+
+    public Student() {}  // No-arg constructor (needed for JSON deserialization)
+
+    public Student(String firstname, String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    // Getters and Setters for first name and last name
+}
+```
+#### 📌 Why it's needed:
++ Spring Boot uses this class to send and receive `JSON` data in `REST APIs` .
+
+### 📁 File: StudentRestController.java (Controller)
+#### ✅ Purpose:
++ This is a REST controller that handles HTTP requests related to Student.
+
+#### 🔧 Annotations Used:
++ `@RestController`: Tells Spring this class handles REST API calls
+
++ `@RequestMapping("/api")`: All endpoints will start with /api
+
++ `@GetMapping`: Maps HTTP GET requests
+
++ `@PathVariable`: Gets values from the URL (like student ID)
+
+#### 🔹 Field: private List<Student> theStudents;
++ A list to hold all student data in-memory (like a temporary database).
+
+#### 🔹 Method: @PostConstruct public void loadData()
+```sh
+@PostConstruct
+public void loadData() {
+    theStudents = new ArrayList<>();
+
+    theStudents.add(new Student("chirag","sankhe"));
+    theStudents.add(new Student("prachi","sankhe"));
+    theStudents.add(new Student("pranjal","sankhe"));
+    theStudents.add(new Student("yadnesh","sankhe"));
+}
+```
+#### ✅ Purpose:
++ This method runs once when the app starts.
+
++ It populates the list with 4 dummy students.
+
++ `@PostConstruct`  ensures it's loaded after the controller is created.
+
+#### 🔹 Endpoint: /api/students
+```sh
+@GetMapping("/students")
+public List<Student> getStudents() {
+    return theStudents;
+}
+```
+#### ✅ Purpose:
++ Returns all students as a list in JSON format.
+
++ You can test it using: `GET` `http://localhost:8080/api/students`
+
+🔹 Endpoint: /api/students/{studentId}
+```sh
+@GetMapping("/students/{studentId}")
+public Student getStudent(@PathVariable int studentId) {
+    return theStudents.get(studentId);
+}
+```
+✅ Purpose:
+Returns one student by ID (index in the list).
+
+Example: `GET /api/students/2` → returns "pranjal sankhe"
+
+
+#### ✅ Summary
++ You created a REST API with:
+
++ A `student` class to represent data
+
++ A `controller` to serve student data
+
++ A list of students loaded at startup
+
++ Two endpoints: `get all students ` and `get a student by ID`
