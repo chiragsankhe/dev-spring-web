@@ -739,5 +739,93 @@ public class StudentErrorResponse {
 
 + Custom time format or error codes
 
- 
+## Global Exception Handling
++  so you don’t have to write @ExceptionHandler in every controller. Clean and reusable!
+
+### ✅ What is Global Exception Handling?
++ Instead of adding error handlers in every controller (`@ExceptionHandler`), we write a central handler using:
+
+```sh
+@ControllerAdvice
+```
++ This works for all controllers in your project.
+
+### 🛠 Step-by-Step: Add Global Exception Handling
++ You’ll create one new class to handle all exceptions.
+
+### ✅ 1. Create: StudentRestExceptionHandler.java
++ 📁 Path: com.luv2code.demo.rest
+
+```sh
+package com.luv2code.demo.rest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class StudentRestExceptionHandler {
+
+    // Handle StudentNotFoundException specifically
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(StudentNotFoundException exc) {
+        StudentErrorResponse error = new StudentErrorResponse();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    // Handle ALL other exceptions (generic fallback)
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(Exception exc) {
+        StudentErrorResponse error = new StudentErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage("Something went wrong: " + exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+}
+```
+### ✅ 2. Remove @ExceptionHandler from StudentRestController
++ You can now delete this part from StudentRestController.java:
+```sg
+// REMOVE THIS from StudentRestController
+@ExceptionHandler
+public ResponseEntity<StudentErrorResponse> handleException(StudentNotFoundException exc) {
+    ...
+}
+```
+### 🎯 What Happens Now?
++ Spring will automatically route any exceptions thrown in any controller to `StudentRestExceptionHandler`.
+
+Example:
++ 🚀 Request:
++ `GET /api/students/100`
+
+📦 Response:
+```
+{
+  "status": 404,
+  "message": "Student id not found - 100",
+  "timeStamp": 1713882901234
+}
+```
++ ✅ Cleaner Code
++ ✅ Centralized Error Logic
++ ✅ More Professional
+
+### Want Bonus Features?
++ I can help you add:
+
++ Custom time formatting (ISO 8601)
+
++ Validation errors (@Valid)
+
++ Error logging (SLF4J)
+
++ Return error code + URL
 
