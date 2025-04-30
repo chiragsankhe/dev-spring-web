@@ -94,3 +94,44 @@ Visit any endpoint like `http://localhost:8080/` in your browser.
 You'll be prompted with a login page.
 
 Use the username/password you've configured.
+
+
+## spring security configration 
+
++ Spring Security, the default `username`  is `user`, and the password is randomly generated unless you override them.
+
++ You can override the default username and password in two main ways:
+
+### ✅ 1. Using application.properties or application.yml
++ This is the simplest way if you're not using a custom `UserDetailsService`.
+
+##### 👉 application.properties:
+```sh
+spring.security.user.name=chirag
+spring.security.user.password=1234
+spring.security.user.roles=USER
+```
+### ✅ 2. Using Java Configuration (UserDetailsService)
+If you want full control, override via Java code:
+```sh
+@Bean
+public UserDetailsService userDetailsService() {
+    UserDetails user = User.withUsername("chirag")
+        .password(passwordEncoder().encode("1234"))
+        .roles("USER")
+        .build();
+
+    return new InMemoryUserDetailsManager(user);
+}
+```
+📌 This overrides the default user account and ignores values from application.properties.
+
+### ✅ You Can Still Log the Password (Optional)
+If you want to log or generate a password dynamically at runtime:
+
+```sh
+String rawPassword = UUID.randomUUID().toString().substring(0, 8);
+System.out.println("Generated Password: " + rawPassword);
+```
+But for consistent login during development, manual setting is preferred.
+
