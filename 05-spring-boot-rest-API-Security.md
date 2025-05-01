@@ -135,3 +135,90 @@ System.out.println("Generated Password: " + rawPassword);
 ```
 But for consistent login during development, manual setting is preferred.
 
+
+## DemoSecurityconfig
+```sh
+package com.luv2code.springboot.cruddemo.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+public class DemoSecurityConfig {
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsManager()
+    {
+      UserDetails chirag = User.builder()
+              .username("chirag")
+              .password("{noop}chirag692001")
+              .roles("EMPLOYEE")
+              .build();
+
+        UserDetails prachi = User.builder()
+                .username("prachi")
+                .password("{noop}prachi1741997")
+                .roles("EMPLOYEE", "MANAGER")
+                .build();
+
+
+        UserDetails pranjal = User.builder()
+                .username("pranjal")
+                .password("{noop}pranjal79195")
+                .roles("EMPLOYEE","MANAGER","ADMIN")
+                .build();
+
+
+        return new InMemoryUserDetailsManager(chirag , prachi , pranjal);
+    }
+}
+
+```
+
+### ✅ Purpose of Your DemoSecurityConfig Class
++ This class is a Spring Security configuration that sets up `in-memory`  authentication.
++ You define a list of users who can authenticate with `usernames` ,` passwords` , and `roles`.
+
+### 🔍 What You Did Line-by-Line:
+```sh
+@Configuration
+public class DemoSecurityConfig {
+```
++ This class is a configuration class.
++ Spring will detect it and use it to configure security.
+
+```sh
+@Bean
+public InMemoryUserDetailsManager userDetailsManager() {
+```
++ You're defining a bean that returns an `InMemoryUserDetailsManager`, which holds users in memory — no database needed.
+
+#### 👤 User Definitions:
+```sh
+UserDetails chirag = User.builder()
+    .username("chirag")
+    .password("{noop}chirag692001")
+    .roles("EMPLOYEE")
+    .build();
+```
++ This creates a user named `chirag`  with password `chirag6920011`, assigned the role `EMPLOYEE`.
+
++ {noop} means the password is `plain text` (not encrypted). Useful for testing only.
+
+You did the same for:
+
++ prachi with roles `EMPLOYEE` ,` MANAGER` 
+
++ pranjal with roles `EMPLOYEE` ,` MANAGER` ,` ADMIN` 
+
+✅ Final Return:
+```sh
+return new InMemoryUserDetailsManager(chirag , prachi , pranjal);
+```
+You return a manager with all these users loaded.
+
+
+
