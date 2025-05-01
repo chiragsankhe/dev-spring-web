@@ -220,5 +220,36 @@ return new InMemoryUserDetailsManager(chirag , prachi , pranjal);
 ```
 You return a manager with all these users loaded.
 
+## ✅ What is CSRF in Spring Security?
++ CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks a user into performing actions on another website where they’re authenticated (like submitting a form).
++ Spring Security protects against CSRF by default for all state-changing requests (e.g. POST, PUT, DELETE).
+
+### 🔐 When CSRF Affects You
+If you're:
+
++ Building a web application with forms (like login, registration) → keep CSRF enabled.
+
++ Building a REST API (consumed by React, Angular, Postman, etc.) → disable CSRF, because you're not using browser sessions or forms.
+
+```sh
+    .csrf().enable() // (enabled by default)
+    .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+    .formLogin();  // used in browser-based apps
+````
++ To use CSRF in an HTML form:
+
+```sh
+<input type="hidden" name="_csrf" value="${_csrf.token}" />
+```
+
+🔓 Example:
+
+```sh
+    .csrf().disable() // disable for REST APIs or token-based auth
+    .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+    .httpBasic();  // or .bearerToken() for JWT
+```
+
+
 
 
