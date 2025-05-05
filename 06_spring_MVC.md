@@ -116,4 +116,60 @@ public class HomeController {
 |Form Binding|	`th:field="*{property}`|
 
 
-      - home.jsp
++ You're building a simple Spring Boot + Thymeleaf demo that displays the current server time on a web page. Here's a clear breakdown of what you've done in this
+### example:
+
+### ✅ 1. Controller: DemoController.java
+```sh
+@Controller
+public class DemoController {
+
+    @GetMapping("/hello")
+    public String sayHello(Model theModel) {
+        theModel.addAttribute("theDate", java.time.LocalDateTime.now());
+        return "helloworld"; // refers to helloworld.html in templates/
+    }
+}
+```
+### 🔍 What it's doing:
++ `@Controller` : Marks this class as a web controller.
+
++ `@GetMapping("/hello"):`  Maps GET requests from /hello to the sayHello() method.
+
++ `Model theModel`: Used to pass data from the controller to the view (HTML).
+
++ `theModel.addAttribute("theDate", ...):` Adds current date-time to the model.
+
++ `return "helloworld":` Tells Spring to render the Thymeleaf template helloworld.html.
+
+### ✅ 2. View: helloworld.html (Thymeleaf Template)
+```
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf">
+<head>
+    <title>Thymeleaf Demo</title>
+</head>
+<body>
+    <p th:text="'Time on the server is ' + ${theDate}" />
+</body>
+</html>
+```
+#### 🔍 What it's doing:
++ `xmlns:th="http://www.thymeleaf":` Enables Thymeleaf-specific attributes like `th:text`.
+```sh
+<p th:text="'Time on the server is ' + ${theDate}">:
+```
++  This replaces the <p> tag’s content with the string:
++ 👉 "Time on the server is [current date/time]"
+
++ 🧪 What happens when you visit `http://localhost:8080/hello`:
++ Spring Boot runs the controller.
+
++ theDate is set to the current date/time.
+
++ Thymeleaf renders helloworld.html, injecting the value of theDate into the page.
+
+✅ Output example:
+```sh
+Time on the server is 2025-05-05T16:42:15.789
+```
