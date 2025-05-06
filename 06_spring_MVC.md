@@ -483,49 +483,44 @@ public String processForm(HttpServletRequest request, Model model) {
 
 @GetMapping and @PostMapping in Spring MVC — these are shorthand annotations that make your controller code more readable and specific.
 
-✅ @GetMapping vs @PostMapping
-Annotation	Used For	HTTP Method	Common Use Case
-@GetMapping	Handling GET requests	GET	Showing forms, fetching data (read)
-@PostMapping	Handling POST requests	POST	Submitting forms, saving data (write)
++ ✅ @GetMapping vs @PostMapping
++ Annotation	Used For HTTP Method	Common Use Case
++ `@GetMapping`Handling GET requests	GET	Showing forms, fetching data (read)
++ `@PostMapping	`Handling POST requests	POST	Submitting forms, saving data (write)
 
-🟢 @GetMapping – Show Form or Data
-java
-Copy
-Edit
+### 🟢 @GetMapping – Show Form or Data
+```sh
 @GetMapping("/showForm")
 public String showForm() {
     return "form-page";
 }
-When user visits /showForm in the browser (GET request), Spring returns the HTML form.
+```
++ When user visits /showForm in the browser (GET request), Spring returns the HTML form.
 
-Used to display something.
++ Used to display something.
 
-🔵 @PostMapping – Process Form Submission
-java
-Copy
-Edit
+#### 🔵 @PostMapping – Process Form Submission
+```sh
 @PostMapping("/processForm")
 public String processForm(@RequestParam("name") String name, Model model) {
     model.addAttribute("message", "Welcome " + name);
     return "result-page";
 }
-This handles the form after submission.
+```
++ This handles the form after submission.
 
-Data is sent using POST and processed on the server.
++ Data is sent using POST and processed on the server.
 
 💡 Example Flow with a Form
 🧾 HTML Form:
-html
-Copy
-Edit
+```sh
 <form th:action="@{/processForm}" method="post">
     <input type="text" name="name">
     <button type="submit">Submit</button>
 </form>
-✅ Controller:
-java
-Copy
-Edit
+```
+#### ✅ Controller:
+```sh
 @GetMapping("/form")
 public String showForm() {
     return "form";
@@ -536,65 +531,123 @@ public String processForm(@RequestParam("name") String name, Model model) {
     model.addAttribute("message", "Hello " + name);
     return "greeting";
 }
-📌 Summary:
-Use @GetMapping to serve pages or data.
+```
+### 📌 Summary:
++ Use @GetMapping to serve pages or data.
 
-Use @PostMapping to handle form submissions or data saving.
++ Use @PostMapping to handle form submissions or data saving.
 
 
 ## what happens at the URL level when using GET vs POST requests.
 
-✅ 1. GET Request
-🔹 What happens:
+### ✅ 1. GET Request
+#### 🔹 What happens:
 All form data is sent in the URL as query parameters.
 
 🔹 Example:
-html
-Copy
-Edit
+```sh
 <form action="/submit" method="get">
     <input type="text" name="name" value="Chirag">
     <button type="submit">Submit</button>
 </form>
-🔹 URL after submission:
-bash
-Copy
-Edit
+```
+### 🔹 URL after submission:
+```sh
 http://localhost:8080/submit?name=Chirag
-🔸 Key points:
-Data is visible in the URL.
+```
 
-Can be bookmarked or cached.
+### 🔸 Key points:
++ Data is visible in the URL.
 
-Not secure for sensitive data.
++ Can be bookmarked or cached.
+
+ +Not secure for sensitive data.
 
 Limited data size (usually around 2KB).
 
-✅ 2. POST Request
-🔹 What happens:
-Form data is sent in the request body, not shown in the URL.
+### ✅ 2. POST Request
+#### 🔹 What happens:
++ Form data is sent in the request body, not shown in the URL.
 
 🔹 Example:
-html
-Copy
-Edit
+```sh
 <form action="/submit" method="post">
     <input type="text" name="name" value="Chirag">
     <button type="submit">Submit</button>
 </form>
+```
 🔹 URL after submission:
-bash
-Copy
-Edit
+```sh
 http://localhost:8080/submit
+```
 But the data (name=Chirag) is in the HTTP request body, not the URL.
 
-🔸 Key points:
-Data is hidden from the URL.
+### 🔸 Key points:
++ Data is hidden from the URL.
 
-More secure and private.
++ More secure and private.
 
-Better for sensitive data (passwords, emails, etc.).
++ Better for sensitive data (passwords, emails, etc.).
 
-Supports larger amounts of data (e.g., file uploads).
++ Supports larger amounts of data (e.g., file uploads).
+
+
+
+## Spring Boot - Spring MVC Form Data Binding - Text Fields - Coding - Part 3
++ simple Spring MVC + Thymeleaf application that:
+
++ Displays a form to enter student details
+
++ Binds the form input to a Java object (Student)
+
++ Submits the form data using @PostMapping
+
+Displays a confirmation page with the submitted data
+
+### ✅ Let's break it down step-by-step:
+##### 🧩 1. Model: Student.java
+```sh
+public class Student {
+    private String firstName;
+    private String lastName;
+
+    // Getters & Setters
+}
+```
+##### 🔹 Purpose:
+
++ This is a POJO (Plain Old Java Object) used to store student data.
+
+ +Spring uses this object to bind form fields.
+
+### 🧩 2. Controller: StudentController.java
+#### ✅ Method 1: @GetMapping("/showStudentForm")
+```sh
+@GetMapping("/showStudentForm")
+public String showForm(Model theModel) {
+    Student theStudent = new Student();        // create empty student
+    theModel.addAttribute("student", theStudent);  // add to model
+    return "student-form";                     // show form page
+}
+```
++ Shows the HTML form page.
+
++ Adds a blank Student object to the model so Thymeleaf can bind form fields to it.
+
+#### ✅ Method 2: @PostMapping("/processStudentForm")
+```sh
+@PostMapping("/processStudentForm")
+public String processForm(@ModelAttribute("student") Student theStudent) {
+    System.out.println("theStudent: " + theStudent.getFirstName() + " " + theStudent.getLastName());
+    return "student-confirmation";
+}
+```
++ Handles form submission.
+
++ Binds form data to theStudent automatically using @ModelAttribute.
+
++ Prints the data to console.
+
++ Passes the student to the confirmation view.
+
 
