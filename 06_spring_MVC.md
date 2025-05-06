@@ -479,5 +479,122 @@ public String processForm(HttpServletRequest request, Model model) {
 |@ModelAttribute|	Complex object with multiple fields|	@ModelAttribute("student") Student s|
 |HttpServletRequest|	Manual contro|l	request.getParameter("name")|
 
+## @GetMapping and @PostMapping
 
+@GetMapping and @PostMapping in Spring MVC — these are shorthand annotations that make your controller code more readable and specific.
+
+✅ @GetMapping vs @PostMapping
+Annotation	Used For	HTTP Method	Common Use Case
+@GetMapping	Handling GET requests	GET	Showing forms, fetching data (read)
+@PostMapping	Handling POST requests	POST	Submitting forms, saving data (write)
+
+🟢 @GetMapping – Show Form or Data
+java
+Copy
+Edit
+@GetMapping("/showForm")
+public String showForm() {
+    return "form-page";
+}
+When user visits /showForm in the browser (GET request), Spring returns the HTML form.
+
+Used to display something.
+
+🔵 @PostMapping – Process Form Submission
+java
+Copy
+Edit
+@PostMapping("/processForm")
+public String processForm(@RequestParam("name") String name, Model model) {
+    model.addAttribute("message", "Welcome " + name);
+    return "result-page";
+}
+This handles the form after submission.
+
+Data is sent using POST and processed on the server.
+
+💡 Example Flow with a Form
+🧾 HTML Form:
+html
+Copy
+Edit
+<form th:action="@{/processForm}" method="post">
+    <input type="text" name="name">
+    <button type="submit">Submit</button>
+</form>
+✅ Controller:
+java
+Copy
+Edit
+@GetMapping("/form")
+public String showForm() {
+    return "form";
+}
+
+@PostMapping("/processForm")
+public String processForm(@RequestParam("name") String name, Model model) {
+    model.addAttribute("message", "Hello " + name);
+    return "greeting";
+}
+📌 Summary:
+Use @GetMapping to serve pages or data.
+
+Use @PostMapping to handle form submissions or data saving.
+
+
+## what happens at the URL level when using GET vs POST requests.
+
+✅ 1. GET Request
+🔹 What happens:
+All form data is sent in the URL as query parameters.
+
+🔹 Example:
+html
+Copy
+Edit
+<form action="/submit" method="get">
+    <input type="text" name="name" value="Chirag">
+    <button type="submit">Submit</button>
+</form>
+🔹 URL after submission:
+bash
+Copy
+Edit
+http://localhost:8080/submit?name=Chirag
+🔸 Key points:
+Data is visible in the URL.
+
+Can be bookmarked or cached.
+
+Not secure for sensitive data.
+
+Limited data size (usually around 2KB).
+
+✅ 2. POST Request
+🔹 What happens:
+Form data is sent in the request body, not shown in the URL.
+
+🔹 Example:
+html
+Copy
+Edit
+<form action="/submit" method="post">
+    <input type="text" name="name" value="Chirag">
+    <button type="submit">Submit</button>
+</form>
+🔹 URL after submission:
+bash
+Copy
+Edit
+http://localhost:8080/submit
+But the data (name=Chirag) is in the HTTP request body, not the URL.
+
+🔸 Key points:
+Data is hidden from the URL.
+
+More secure and private.
+
+Better for sensitive data (passwords, emails, etc.).
+
+Supports larger amounts of data (e.g., file uploads).
 
