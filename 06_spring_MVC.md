@@ -750,7 +750,7 @@ Part	Purpose
 th:object="${student}"	Binds the whole form to a Student object
 th:field="*{firstName}"	Connects this input to student.firstName
 
-dropdown list (select box) in Spring MVC with Thymeleaf.
+## dropdown list (select box) in Spring MVC with Thymeleaf.
 
 ✅ Goal:
 Create a form with a dropdown like:
