@@ -182,14 +182,21 @@ _ `Spring Boot`  → Provides auto-configuration, embedded servers, and starter 
 ---
 
 ## 5. Does Spring Boot run code faster than regular Spring code?
- • No.
- • Behind the scenes, Spring Boot uses same code of Spring Framework
- • Remember, Spring Boot is about making it easier to get started
- • Minimizing configuration etc 
+ + No.
+ +  Behind the scenes, Spring Boot uses same code of Spring Framework
+ +   Remember, Spring Boot is about making it easier to get started
+ +    Minimizing configuration etc 
  ---
  ## 6. what is mavan?
 +  Maven is a build automation and dependency management tool for Java projects.
-
+```
+  Maven Solution
+ • Tell Maven the projects you are working with (dependencies)
+ • Spring, Hibernate etc …. 
+• Maven will go out and download the JAR files for those projects for you 
+• And Maven will make those JAR files available during compile/run 
+• Think of Maven as your friendly helper / personal shopper :-
+```
 #### What it does:
 + Builds your project
 
@@ -210,4 +217,35 @@ _ `Spring Boot`  → Provides auto-configuration, embedded servers, and starter 
 + `src/main/java` for source code
 
 + `src/test/java`  for tests
+
+---
+## 7. standard directory structure
+
++ standard directory structure looks like this:
+
+
+```
+my-project/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/                # Your Java source code
+│   │   │   └── com/example/app/
+│   │   │       └── MyApplication.java
+│   │   ├── resources/           # Config files, templates, static files
+│   │   │   ├── application.properties
+│   │   │   └── templates/       # Thymeleaf or other view templates
+│   │   │   └── static/          # Static assets like CSS, JS, images
+│   │
+│   ├── test/
+│   │   ├── java/                # Your unit and integration tests
+│   │   └── resources/           # Test resources (if needed)
+│
+├── pom.xml                      # Maven configuration (dependencies, plugins, build settings)
+└── target/                  # Auto-generated build output (JAR/WAR files, compiled classes)
+```
+#### Why it’s important
++ Maven follows this structure by default, so tools and IDEs know exactly where to find code, configs, and tests.
+
++ Spring Boot also expects this structure — if you follow it, no extra configuration is needed.
 
