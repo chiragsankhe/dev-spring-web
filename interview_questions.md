@@ -248,4 +248,78 @@ my-project/
 + Maven follows this structure by default, so tools and IDEs know exactly where to find code, configs, and tests.
 
 + Spring Boot also expects this structure — if you follow it, no extra configuration is needed.
+---
+
+## 8. mavan pom.xml
++  Maven, the POM file (pom.xml) is the Project Object Model file — the main configuration file that tells Maven:
+
++ Project details (`name`,` version` ,` group` )
+
++ Dependencies (libraries your project needs)
+
++ Build settings (`plugins` ,` Java version` , etc.)
+
++ Packaging type (`JAR` ,` WAR` )
+
+#### Basic Example of pom.xml in Spring Boot
+```
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Maven model version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project coordinates -->
+    <groupId>com.example</groupId>      <!-- Company/project namespace -->
+    <artifactId>demo-app</artifactId>   <!-- Project name -->
+    <version>1.0.0</version>             <!-- Version -->
+    <packaging>jar</packaging>          <!-- Packaging type -->
+
+    <!-- Parent: Spring Boot starter -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version>
+    </parent>
+
+    <!-- Dependencies -->
+    <dependencies>
+        <!-- Spring Web for REST APIs -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Optional: MySQL driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!-- Build settings -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+### Key Sections in a POM File
+Section	                  |    Purpose
+`<groupId>`	              |   Unique ID for your project’s organization (like a package name).
+`<artifactId>`	           |   Name of your project.
+`<version>`	              |   Project version.
+`<packaging>`	            |   Output type (jar, war).
+`<parent>`	               |   Parent project settings (Spring Boot starter parent in this case).
+`<dependencies>`	         |   List of libraries your app needs.
+`<build>`	                |  Build-related settings, plugins, and configurations.
+
 
