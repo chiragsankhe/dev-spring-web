@@ -313,9 +313,9 @@ my-project/
 
 ```
 ### Key Sections in a POM File
---Section	                  |    Purpose
---`<groupId>`	              |   Unique ID for your project’s organization (like a package name).
---`<artifactId>`	           |   Name of your project.
+-- Section	                  |    Purpose
+-- `<groupId>`	              |   Unique ID for your project’s organization (like a package name).
+-- `<artifactId>`	           |   Name of your project.
 --`<version>`	              |   Project version.
 --`<packaging>`	            |   Output type (jar, war).
 --`<parent>`	               |   Parent project settings (Spring Boot starter parent in this case).
