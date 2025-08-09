@@ -44,3 +44,62 @@ Still allows customization — you can override defaults if you need.
 + Deploy WAR to server.
 
 ---
+
+## 2. spring and springboot 
+###   1. What is Spring?
++ Spring Framework is a huge Java framework for building enterprise applications.
+
++ It provides modules like `Spring Core`,` Spring MVC` ,` Spring Data JPA` ,` Spring Security` , etc.
+
++ It is powerful but requires a lot of manual configuration (XML or Java-based).
+
+#### Example – Creating a REST API in Spring (without Spring Boot)
+
+#### Steps:
+
++ Create Maven project.
+
++ Add dependencies for Spring MVC, Jackson, Servlet API, etc. (manually in pom.xml).
+
++ Configure DispatcherServlet in web.xml.
+
++ Configure beans in XML or Java config.
+
++ Deploy WAR file to Tomcat manually.
+
+
+#### Drawbacks:
+
++ Lots of boilerplate (XML, web.xml, bean configuration).
+
++ Need to deploy WAR to server manually.
+
+#### 2. What is Spring Boot?
++ Spring Boot is a layer on top of Spring Framework.
+
++ It uses `opinionated defaults`  and `auto-configuration`  to remove boilerplate setup.
+
++ Comes with embedded servers (Tomcat, Jetty, Undertow) so you just run your app like a normal Java program.
+
++ No web.xml, no manual WAR deployment — just run it.
+
+#### Example – Same REST API in Spring Boot
+
+Steps:
+
++ Create project from Spring Initializr.
+
++ Select Spring Web dependency.
+
++ Write code — no XML needed.
+
+
+
+##### Advantages:
+
++ No XML configuration — all Java-based.
+
++ Embedded Tomcat — run with java -jar myapp.jar.
+
++ Ready for microservices and production.
+
