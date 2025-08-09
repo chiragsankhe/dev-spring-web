@@ -391,3 +391,16 @@ Follows Spring Boot's version compatibility automatically.
 | `spring-boot-starter-thymeleaf`	|For server-side HTML rendering|
 | `spring-boot-starter-actuator `|	For monitoring and metrics|
 
+---
+## 11. Spring Boot DevTools
++ Spring Boot DevTools is a developer-friendly feature in Spring Boot that makes the development process faster and easier by automatically `restarting`,` reloading` , and` refreshing `your application whenever code changes are detected.
+
+##   Example: How It Works
++ Add spring-boot-devtools dependency.
+
++ Start your Spring Boot app.
+
++ Change a Java file or .html file.
+
++ DevTools detects the change → Restarts your app → Browser auto-refreshes.
+
