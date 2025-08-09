@@ -404,3 +404,186 @@ Follows Spring Boot's version compatibility automatically.
 
 + DevTools detects the change → Restarts your app → Browser auto-refreshes.
 
+--- 
+## 12. spring boot actuators 
++ In Spring Boot, Actuator is a feature that helps you monitor and manage your application in production (and during development).
+
++ It exposes built-in endpoints (via HTTP or JMX) that give you details about your app’s` health`,` metrics` ,` environment`,
+  ` configuration`, etc. — all without writing extra code.
+
+#### Why Actuator is used
++ Monitor application health (/actuator/health)
+
++ View metrics (CPU, memory usage, request count, etc.)
+
++ Check running beans, configuration properties
+
++ Manage application remotely (shutdown, log level changes)
+
+ +Integrates with monitoring tools (`Prometheus`,` Grafana` , etc.)
+
+### How to add Actuator
+In pom.xml:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+### Common Actuator Endpoints
+|Endpoint	| Description|
+|---------|-------------|
+| /actuator/health	|Shows application health status|
+| /actuator/info	|Application info (from application.properties)|
+| /actuator/metrics	|Shows metrics like memory, CPU, request counts|
+| /actuator/beans	|List of all Spring Beans|
+| /actuator/env|	Environment properties|
+| /actuator/mappings|	All request mappings|
+| /actuator/threaddump	|Thread dump|
+| /actuator/loggers	|View & change log levels|
+| /actuator/shutdown|	Gracefully shutdown the app (needs enabling)|
+
+
+### example 
+of using Spring Boot Actuator in a real-time `Employee Management ` Project so you can see exactly how it works in practice.
+
+#### Scenario
++ We have an Employee Management System built in Spring Boot.
++ We want to monitor application ` health`,` metrics` , and` HTTP request details`  using Spring Boot Actuator.
+
+#### Step 1: Add Actuator Dependency
+In your pom.xml:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+#### Step 2: Enable Specific Endpoints
+In `application.properties`:
+```sh
+# Enable all actuator endpoints
+management.endpoints.web.exposure.include=*
+
+# Custom App Info
+management.info.env.enabled=true
+
+# Set custom port for monitoring (optional)
+management.server.port=8081
+
+# Add some app info
+info.app.name=Employee Management System
+info.app.version=1.0
+info.app.description=Spring Boot app for managing employees
+```
+### Step 3: Example REST Controller
+```
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    private final List<String> employees = new ArrayList<>(List.of("Alice", "Bob", "Charlie"));
+
+    @GetMapping
+    public List<String> getEmployees() {
+        return employees;
+    }
+
+    @PostMapping
+    public String addEmployee(@RequestParam String name) {
+        employees.add(name);
+        return "Employee added: " + name;
+    }
+}
+```
+### Step 4: Using Actuator Endpoints in Real Time
+Once you run the app:
+
+##### 1. Health Check
+
++ `GET http://localhost:8081/actuator/health`
++ **Response:
+```
+{
+  "status": "UP"
+}
+```
+This shows if your Employee Management app is running fine.
+
+2. App Info
+bash
+Copy
+Edit
+GET http://localhost:8081/actuator/info
+Response:
+
+json
+Copy
+Edit
+{
+  "app": {
+    "name": "Employee Management System",
+    "version": "1.0",
+    "description": "Spring Boot app for managing employees"
+  }
+}
+3. Metrics (Real-Time)
+bash
+Copy
+Edit
+GET http://localhost:8081/actuator/metrics/http.server.requests
+Response Example:
+
+json
+Copy
+Edit
+{
+  "name": "http.server.requests",
+  "measurements": [
+    {
+      "statistic": "COUNT",
+      "value": 12
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "uri",
+      "values": ["/employees", "/employees/{id}"]
+    }
+  ]
+}
+This tells you how many requests were made to /employees in real-time.
+
+4. Integration with Prometheus & Grafana
+Add Prometheus dependency:
+
+xml
+Copy
+Edit
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+Enable Prometheus endpoint:
+
+properties
+Copy
+Edit
+management.endpoints.web.exposure.include=prometheus
+Visit:
+
+bash
+Copy
+Edit
+http://localhost:8081/actuator/prometheus
+Now, Grafana can pull metrics from Prometheus and show dashboards with:
+
+Number of employees added per minute
+
+HTTP request response times
+
+Error rate, etc.
+
+✅ This is how you can monitor your Employee Management app in real-time with Actuator, Prometheus, and Grafana.
