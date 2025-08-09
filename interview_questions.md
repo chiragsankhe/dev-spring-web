@@ -324,3 +324,43 @@ my-project/
 |`<build>`	                |  Build-related settings, plugins, and configurations.|
 
 
+---
+
+## 8. static content 
++ In Spring Boot, static content means files like `HTML` ,` CSS `,` JavaScript` , and `images` 
++ that are served directly to the browser without any processing by the server.
+```
+  src/
+ └── main/
+     └── resources/
+         └── static/
+             ├── index.html
+             ├── style.css
+             └── script.js
+```
+
+### How it works
++ If you put index.html in `static/`,` visiting http://localhost:8080/index.html` will load it directly.
+
++ No controller or backend code is needed.
+
+Useful for:
+
++ Images
+
++ CSS and JS files
+
++ Downloadable files (PDF, docs)
+---
+
+## 9. Unit testing
+Unit testing is a software testing method where you test `small` ,` isolated parts`  of your code (usually individual methods or classes) to make sure they work as expected.
+
+Key Points
++ Tests only one unit of functionality at a time.
+
++ Should be independent (not rely on database, network, or other services).
+
++ Helps find bugs early, before integration or deployment.
+
++ Often written using JUnit in Java and Mockito for mocking dependencies.
