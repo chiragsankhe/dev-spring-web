@@ -364,3 +364,30 @@ Key Points
 + Helps find bugs early, before integration or deployment.
 
 + Often written using JUnit in Java and Mockito for mocking dependencies.
+
+---
+## 10. what is springboot starters?
++ In Spring Boot, starters are `predefined dependency` bundles that make it easy to add specific features to your project without manually searching and adding all required libraries.
+
++ Think of them as `“ready-made packages”` for common tasks.
+
+### Key Points:
++ A starter is basically a Maven or Gradle dependency.
+
+ +It pulls in all other required dependencies for a given feature.
+
++ Saves you from remembering library names and versions.
+
+Follows Spring Boot's version compatibility automatically.
+
+
+### Common Spring Boot Starters
+|Starter |	Purpose|
+|---------|----------|
+| `spring-boot-starter-web`	 |For building web apps, REST APIs (Spring MVC + Tomcat)|
+| `spring-boot-starter-data-jpa` |For database access with Hibernate/JPA|
+|`spring-boot-starter-security`	|For authentication and authorization|
+| `spring-boot-starter-test`	|For unit and integration testing|
+| `spring-boot-starter-thymeleaf`	|For server-side HTML rendering|
+| `spring-boot-starter-actuator `|	For monitoring and metrics|
+
