@@ -572,3 +572,106 @@ management.endpoints.web.exposure.include=prometheus
 + Error rate, etc.
 
 ✅ This is how you can monitor your Employee Management app in real-time with Actuator, Prometheus, and Grafana.
+
+---
+## 13. mavan wrapper file 
++ The Maven Wrapper (often called `mvnw` ) is basically a  `small set of files that allow you to run Maven without having Maven installed globally on your computer.`
+
+## 📂 Files Involved in Maven Wrapper
+When you enable the Maven Wrapper, you get these files in your project:
+```
+mvnw          → Unix shell script to run Maven
+mvnw.cmd      → Windows batch script to run Maven
+
+/.mvn/wrapper/maven-wrapper.jar
+/.mvn/wrapper/maven-wrapper.properties
+```
+### 🔹 Why it Exists
+####  Without the wrapper:
+
++ Every developer must install Maven manually.
+
++ They might have different Maven versions, which can cause build issues.
+
+#### With the wrapper:
+
++ The correct Maven version will automatically be downloaded and used for your project.
+
++ You just run ./mvnw clean install (Linux/Mac) or mvnw.cmd clean install (Windows), and it works.
+
+---
+## 14. application.properties
++ In Spring Boot, the `application.properties`  file is a central configuration file where you define settings for your application — like `database connection details`,` server port`,` logging levels`, or` custom application variables` — without hardcoding them in your Java code.
+
+#### 1. Location
+Usually placed in the src/main/resources folder of your project.
+
+Spring Boot automatically reads it during application startup.
+```
+# ==================================
+# CORE SETTINGS
+# ==================================
+spring.application.name=employee-management
+spring.main.banner-mode=off
+logging.level.root=INFO
+logging.level.com.example=DEBUG
+
+# ==================================
+# WEB SETTINGS
+# ==================================
+server.port=8081
+server.servlet.context-path=/api
+
+# ==================================
+# SECURITY SETTINGS
+# (Spring Security default login)
+spring.security.user.name=admin
+spring.security.user.password=admin123
+spring.security.user.roles=ADMIN
+
+# ==================================
+# ACTUATOR SETTINGS
+# ==================================
+management.endpoints.web.exposure.include=health,info,metrics,beans,env
+management.endpoint.health.show-details=always
+management.endpoints.web.base-path=/actuator
+management.endpoint.shutdown.enabled=true
+
+# ==================================
+# DATA (DATABASE) SETTINGS
+# ==================================
+spring.datasource.url=jdbc:mysql://localhost:3306/employee_db
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA & Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# ==================================
+# SERVER PROPERTIES
+# ==================================
+server.tomcat.threads.max=200
+server.tomcat.connection-timeout=20000
+server.error.include-message=always
+
+```
+### ✅ How this works in an Employee Management Project
+
++ Core → App name & logging configuration.
+
++ Web → Runs on http://localhost:8081/api instead of default 8080.
+
++ Security → Protects app with basic login (admin/admin123).
+
++ Actuator → Exposes health, metrics, and environment endpoints at /actuator.
+
++ Data → Connects to MySQL database employee_db.
+
++ Server → Sets Tomcat thread limit and error details.
+
+
+
