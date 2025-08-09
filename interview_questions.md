@@ -313,13 +313,13 @@ my-project/
 
 ```
 ### Key Sections in a POM File
-Section	                  |    Purpose
-`<groupId>`	              |   Unique ID for your project’s organization (like a package name).
-`<artifactId>`	           |   Name of your project.
-`<version>`	              |   Project version.
-`<packaging>`	            |   Output type (jar, war).
-`<parent>`	               |   Parent project settings (Spring Boot starter parent in this case).
-`<dependencies>`	         |   List of libraries your app needs.
-`<build>`	                |  Build-related settings, plugins, and configurations.
+--Section	                  |    Purpose
+--`<groupId>`	              |   Unique ID for your project’s organization (like a package name).
+--`<artifactId>`	           |   Name of your project.
+--`<version>`	              |   Project version.
+--`<packaging>`	            |   Output type (jar, war).
+--`<parent>`	               |   Parent project settings (Spring Boot starter parent in this case).
+--`<dependencies>`	         |   List of libraries your app needs.
+--`<build>`	                |  Build-related settings, plugins, and configurations.
 
 
