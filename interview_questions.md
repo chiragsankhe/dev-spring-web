@@ -504,24 +504,19 @@ Once you run the app:
 ##### 1. Health Check
 
 + `GET http://localhost:8081/actuator/health`
-+ **Response:
+##### Response:
 ```
 {
   "status": "UP"
 }
 ```
-This shows if your Employee Management app is running fine.
++ This shows if your Employee Management app is running fine.
 
-2. App Info
-bash
-Copy
-Edit
-GET http://localhost:8081/actuator/info
-Response:
+##### 2. App Info
 
-json
-Copy
-Edit
++ `GET http://localhost:8081/actuator/info`
+##### Response:
+```
 {
   "app": {
     "name": "Employee Management System",
@@ -529,16 +524,12 @@ Edit
     "description": "Spring Boot app for managing employees"
   }
 }
-3. Metrics (Real-Time)
-bash
-Copy
-Edit
-GET http://localhost:8081/actuator/metrics/http.server.requests
-Response Example:
+```
+#####  3. Metrics (Real-Time)
 
-json
-Copy
-Edit
++ `GET http://localhost:8081/actuator/metrics/http.server.requests`
+##### Response Example:
+```
 {
   "name": "http.server.requests",
   "measurements": [
@@ -554,36 +545,30 @@ Edit
     }
   ]
 }
-This tells you how many requests were made to /employees in real-time.
+```
++ This tells you how many requests were made to` /employees ` in real-time.
 
-4. Integration with Prometheus & Grafana
+#### 4. Integration with Prometheus & Grafana
 Add Prometheus dependency:
-
-xml
-Copy
-Edit
+```
 <dependency>
     <groupId>io.micrometer</groupId>
     <artifactId>micrometer-registry-prometheus</artifactId>
 </dependency>
-Enable Prometheus endpoint:
-
-properties
-Copy
-Edit
+```
++ Enable Prometheus endpoint:
+```
 management.endpoints.web.exposure.include=prometheus
-Visit:
+```
+#### Visit:
 
-bash
-Copy
-Edit
-http://localhost:8081/actuator/prometheus
-Now, Grafana can pull metrics from Prometheus and show dashboards with:
++ `http://localhost:8081/actuator/prometheus`
++ Now, Grafana can pull metrics from Prometheus and show dashboards with:
 
-Number of employees added per minute
++ Number of employees added per minute
 
-HTTP request response times
+ +HTTP request response times
 
-Error rate, etc.
++ Error rate, etc.
 
 ✅ This is how you can monitor your Employee Management app in real-time with Actuator, Prometheus, and Grafana.
