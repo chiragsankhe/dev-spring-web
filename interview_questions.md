@@ -1051,3 +1051,78 @@ class Car {
 }
 
 ```
+
+## 6. Development Process: Constructor Injection
+### 1️⃣ Create the Dependency Class
+This is the class your main class will depend on.
+```
+import org.springframework.stereotype.Component;
+
+@Component // Marks this as a bean in Spring's container
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+### 2️⃣ Create the Main Class that Depends on It
+Use a constructor to accept the dependency.
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine; // Dependency
+
+    @Autowired // Tells Spring to inject Engine here
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is driving...");
+    }
+}
+```
+### 3️⃣ Create the Spring Boot Main Application
+```
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class ConstructorInjectionExample {
+    public static void main(String[] args) {
+        ApplicationContext context =
+                SpringApplication.run(ConstructorInjectionExample.class, args);
+
+        // Get Car bean from container
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+### 4️⃣ How It Works
++ Spring scans for classes with 1`@Component.`
+
++ Finds `Engine` → creates and stores it as a bean.
+
++ Finds `Car` → sees it needs an Engine in the constructor.
+
++ Injects the Engine bean into the Car bean.
+
+You request the Car from the container → it’s ready to use.
+
+5️⃣ Output
+```
+Engine started...
+Car is driving...
+```
+### 💡 Pro Tip:
++ If your class has only one constructor, you can skip @Autowired — Spring will still inject automatically:
+```
+public Car(Engine engine) { this.engine = engine; }
+```
