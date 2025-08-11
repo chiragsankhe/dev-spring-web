@@ -1259,3 +1259,105 @@ com.example.demo
  └── CoachApp.java       (@SpringBootApplication)
 
 ```
+---
+## 8. @primary annotation 
++ multiple Coach implementations and to choose one as the default using @Primary.
+
+Here’s a simple Spring Boot example:
+
+### 1. Coach Interface
+```
+package com.example.demo.coach;
+
+public interface Coach {
+    String getDailyWorkout();
+}
+```
+### 2. Multiple Implementations
+```
+package com.example.demo.coach;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class CricketCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice fast bowling for 15 minutes";
+    }
+}
+```
+package com.example.demo.coach;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+@Component
+@Primary   // This will be injected by default if multiple beans are found
+public class FootballCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice dribbling for 30 minutes";
+    }
+}
+```
+```
+package com.example.demo.coach;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class HockeyCoach implements Coach {
+    @Override
+    public String getDailyWorkout() {
+        return "Practice shooting for 20 minutes";
+    }
+}
+```
+### 3. Controller to Use the Coach
+```
+package com.example.demo.controller;
+
+import com.example.demo.coach.Coach;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class DemoController {
+
+    private final Coach coach;
+
+    public DemoController(Coach coach) { // Constructor Injection
+        this.coach = coach;
+    }
+
+    @GetMapping("/dailyworkout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+```
+### 4. Main Application
+```
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MyApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApp.class, args);
+    }
+}
+```
+#### How it works:
++ Spring scans and finds three beans implementing Coach:
+
++ CricketCoach
+
++ FootballCoach (marked @Primary) ✅
+
++ HockeyCoach
+
++ When DemoController asks for a Coach, Spring injects FootballCoach by default because of @Primary.
