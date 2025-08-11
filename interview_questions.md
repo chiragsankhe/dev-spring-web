@@ -821,3 +821,32 @@ class Laptop {
     }
 }
 ```
+--- 
+## 2 . spring Bean
++ In Spring, a bean is simply an object that is `created`,` managed` , and` destroyed`  by the Spring Container.
+
++ If the container didn’t create it, it’s just a normal Java object.
++ If the container did create it and is managing it, it’s a Spring Bean.
+#### Simple Definition
++ A Spring Bean is:
+
++ A Java object that is registered in the Spring IoC container so that Spring can create it, inject its dependencies, and manage its entire lifecycle.
+
+### Key points
++ Beans are the building blocks of a Spring application.
+
+You define them either:
+
+By annotating the class:
+
++ `@Component` 
+
++ `@Service`
+
++ `@Repository`
+
++ `@Controller`
+
+Or by writing a method with @Bean inside a @Configuration class.
+
+The container keeps a registry of all beans.
