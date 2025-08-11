@@ -1287,6 +1287,7 @@ public class CricketCoach implements Coach {
     }
 }
 ```
+```
 package com.example.demo.coach;
 
 import org.springframework.context.annotation.Primary;
@@ -1361,3 +1362,13 @@ public class MyApp {
 + HockeyCoach
 
 + When DemoController asks for a Coach, Spring injects FootballCoach by default because of @Primary.
+
+---
+
+### Which one: @Primary or @Qualifier?
++  • `@Primary `leaves it up to the implementation classes
++  • Could have the issue of multiple @Primary classes leading to an error 
++ • @Qualifier allows to you be very specific on which bean you want 
++ • In general, I recommend using `@Qualifier`
++  • More specific
+ + • Higher priority
