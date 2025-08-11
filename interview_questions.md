@@ -1243,4 +1243,19 @@ Practice dribbling for 20 minutes!
 (because we used footballCoach in the `qualifier`)
 
 + If you change `@Qualifier("footballCoach")` to` @Qualifier("cricketCoach")` or `@Qualifier("hockeyCoach")`, you’ll get the respective output.
+---
+## 7. Component scanning
+Component scanning means `Spring automatically finds ` and `registers ` your `beans` by looking for special annotations in your code.
 
+What it looks like in our Coach example
+### Folder structure:
+```
+com.example.demo
+ ├── Coach.java
+ ├── CricketCoach.java   (@Component)
+ ├── FootballCoach.java  (@Component)
+ ├── HockeyCoach.java    (@Component)
+ ├── DemoController.java (@RestController)
+ └── CoachApp.java       (@SpringBootApplication)
+
+```
