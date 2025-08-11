@@ -675,4 +675,149 @@ server.error.include-message=always
 
 ---
 
+# spring core 
 
+## 1. Inversion of Control (IoC)
+ In Spring Boot (and Spring in general), Inversion of Control (IoC) is a principle where the control of object creation and dependency management is given to the framework instead of you manually creating and wiring objects in your code.
+
+Simple definition:
+Normally in Java, you do something like:
+```
+Car car = new Car();
+```
+Here, you are in control of creating the object.
+
+With IoC, you tell Spring what you need, and Spring will create and give you that object automatically, without you using new.
+You just declare dependencies, and Spring injects them for you.
+
+### Why is it called "Inversion of Control"?
+In normal programming → You control when and how objects are created.
+
+In IoC → Spring controls when and how objects are created.
+
+The control is inverted — hence Inversion of Control.
+
+
+### Real-life example
+Think of a restaurant:
+
+### Without IoC:
++ You cook your own food → you buy ingredients, prepare, cook, clean.
+
+### With IoC: 
++ You just place the order → the chef (Spring) cooks and serves it for you.
++ You only declare what you need, not how to make it.
+
+
+### How Spring Boot implements IoC
++ IoC Container = The part of Spring responsible for creating and managing objects.
+
+### Two main IoC containers in Spring:
+
++ ` BeanFactory ` → Basic IoC container.
+
++ `ApplicationContext ` → Advanced IoC container with more features (events, AOP, etc.).
+
++ You define beans (in` @Configuration`  or using annotations like `@Component`,` @Service`, etc.).
+
++ Spring scans and manages these beans and injects them where required.
+
+
+### Example: Laptop uses Processor
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
+
+@SpringBootApplication
+public class IocExampleApplication {
+    public static void main(String[] args) {
+        var context = SpringApplication.run(IocExampleApplication.class, args);
+
+        // Get Laptop object from Spring
+        Laptop laptop = context.getBean(Laptop.class);
+        laptop.start();
+    }
+}
+
+@Component
+class Processor {
+    void run() {
+        System.out.println("Processor is running...");
+    }
+}
+
+@Component
+class Laptop {
+    private final Processor processor;
+
+    @Autowired // IoC: Spring injects Processor here
+    public Laptop(Processor processor) {
+        this.processor = processor;
+    }
+
+    void start() {
+        processor.run();
+        System.out.println("Laptop is starting...");
+    }
+}
+```
+### How IoC works here
++ You don’t use new Processor() or new Laptop().
+
++ Spring creates both objects automatically when the application starts.
+
++ Spring injects the `Processor`  object into `Laptop`  via the `constructor` .
+
++ When you get the Laptop bean from Spring’s IoC container and call .start(), it uses the injected Processor.
+
+🔹 Output:
+```
+Processor is running...
+Laptop is starting...
+```
+
+
+
+
+
+
+
+
+
+
+### Manual (without IoC)
+```
+public class ManualExample {
+    public static void main(String[] args) {
+        // Manually create Processor object
+        Processor processor = new Processor();
+
+        // Manually create Laptop object and pass Processor
+        Laptop laptop = new Laptop(processor);
+
+        // Call method
+        laptop.start();
+    }
+}
+
+class Processor {
+    void run() {
+        System.out.println("Processor is running...");
+    }
+}
+
+class Laptop {
+    private final Processor processor;
+
+    public Laptop(Processor processor) {
+        this.processor = processor;
+    }
+
+    void start() {
+        processor.run();
+        System.out.println("Laptop is starting...");
+    }
+}
+```
