@@ -850,3 +850,142 @@ By annotating the class:
 Or by writing a method with @Bean inside a @Configuration class.
 
 The container keeps a registry of all beans.
+
+### 💡 Summary Table:
+
+|Term	| Meaning|
+|-------|-----------|
+|Bean |	A Java object managed by the Spring container.|
+|IoC  |Container	The system that creates and manages beans.|
+|@Component / @Bean	 |Ways to tell Spring which objects should become beans.|
+
+
+--- 
+
+## 3.  ioc container
+
++ In IoC (Inversion of Control), the container is like a `box`  that:
+
++  `Creates` all the objects (beans) your app needs
+
++  `Stores` them safely inside
+
++  `Gives` them to you whenever you ask
+
++  `Manages` them until the app closes
+
+### In Spring
+When you run:
+```
+ApplicationContext context = SpringApplication.run(App.class, args);
+```
++ That` ApplicationContext ` is the IoC container.
+It:
+
++ Scans for your beans (`@Component`,` @Service`, etc.).
+
++ Creates and wires them together.
+
+Keeps them ready for you to use with:
+```
+MyBean obj = context.getBean(MyBean.class);
+```
+## 4.   injection means
+
++ In Spring, injection means giving an object (dependency) to another object — instead of that object creating it by itself.
+
+### Example Without Injection (Manual)
+```
+class Car {
+    Engine engine = new Engine(); // Car creates Engine itself
+}
+```
+❌ Problem: Car is tightly coupled to Engine — you can’t easily change or test it.
+
+### Example With Injection
+```
+@Component
+class Engine { }
+
+@Component
+class Car {
+    private final Engine engine;
+
+    @Autowired
+    public Car(Engine engine) { // Engine is injected here
+        this.engine = engine;
+    }
+}
+```
++ ✅ Here, Car doesn’t create Engine. Spring injects it when creating Car.
+
+### Why injection is important
++ Makes your code loose-coupled (easy to swap dependencies).
+
++ Easier to test (you can inject mock objects).
+
++ Follows Dependency Inversion Principle.
+
+### Types of Injection in Spring
+#### 1. Setter Injection
+Spring calls your setter method to pass the dependency.
+```
+@Component
+class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+@Component
+class Car {
+    private Engine engine;
+
+    @Autowired
+    public void setEngine(Engine engine) { // Setter Injection
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is driving...");
+    }
+}
+```
+#### Flow:
+
++ Spring creates Engine
+
++ Spring creates Car
+
++ Spring calls setEngine(engine) to inject it
+
+### 2. Constructor Injection (You said “getter” but I think you mean constructor — getter is just for reading values)
+Spring passes the dependency through the constructor when creating the object.
+```
+@Component
+class Car {
+    private final Engine engine;
+
+    @Autowired
+    public Car(Engine engine) { // Constructor Injection
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is driving...");
+    }
+}
+```
+### Flow:
+
++ Spring creates Engine
+
++ Spring calls new Car(engine) and injects it
+
+### Which is better?
++ `Constructor injection` → Recommended for required dependencies (ensures the object is fully ready at creation).
+
++ `Setter injection` → Good for optional dependencies or when you might change them later.
+
