@@ -1126,3 +1126,121 @@ Car is driving...
 ```
 public Car(Engine engine) { this.engine = engine; }
 ```
+### build a Spring Boot example 
+### 1️⃣ Coach Interface
+```
+package com.example.demo;
+
+public interface Coach {
+    String getDailyWorkout();
+}
+```
+### 2️⃣ CricketCoach
+```
+package com.example.demo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class CricketCoach implements Coach {
+
+    @Override
+    public String getDailyWorkout() {
+        return "Practice fast bowling for 15 minutes!";
+    }
+}
+```
+### 3️⃣ FootballCoach
+```
+package com.example.demo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class FootballCoach implements Coach {
+
+    @Override
+    public String getDailyWorkout() {
+        return "Practice dribbling for 20 minutes!";
+    }
+}
+```
+### 4️⃣ HockeyCoach
+```
+package com.example.demo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class HockeyCoach implements Coach {
+
+    @Override
+    public String getDailyWorkout() {
+        return "Practice penalty shots for 30 minutes!";
+    }
+}
+```
+### 5️⃣ DemoController
+```
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class DemoController {
+
+    private final Coach coach;
+
+    // Constructor Injection with @Qualifier to choose specific coach
+    public DemoController(@Qualifier("footballCoach") Coach coach) {
+        this.coach = coach;
+    }
+
+    @GetMapping("/dailyworkout")
+    public String getWorkout() {
+        return coach.getDailyWorkout();
+    }
+}
+```
++ 🔹 Here, `@Qualifier("footballCoach")` tells Spring:
+
++ “From all the available Coach beans, inject the one named footballCoach.”
+
++ Bean names are automatically generated from class names (first letter lowercase).
+
++ CricketCoach → "cricketCoach"
+
++ FootballCoach → "footballCoach"
+
++ HockeyCoach → "hockeyCoach"
+
+### 6️⃣ Main Application
+```
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CoachApp {
+    public static void main(String[] args) {
+        SpringApplication.run(CoachApp.class, args);
+    }
+}
+```
+### 7️⃣ How to Test
+Run the app and visit:
+```
+http://localhost:8080/dailyworkout
+```
+You will get:
+
+```
+Practice dribbling for 20 minutes!
+```
+(because we used footballCoach in the `qualifier`)
+
++ If you change `@Qualifier("footballCoach")` to` @Qualifier("cricketCoach")` or `@Qualifier("hockeyCoach")`, you’ll get the respective output.
+
