@@ -989,3 +989,65 @@ class Car {
 
 + `Setter injection` → Good for optional dependencies or when you might change them later.
 
+--- 
+## 5. @Autowire
++ In Spring, ` @Autowired ` is an annotation that tells the IoC container:
+
++ `"Please inject this dependency for me — you find it, create it, and give it to me."`
+
+### Simple Meaning
++ `@Autowired` = `"Spring, please give me an already-made object (bean) from your container."`
+
+### Example — Constructor Injection
+```
+@Component
+class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+@Component
+class Car {
+    private final Engine engine;
+
+    @Autowired // Spring will inject Engine here
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is driving...");
+    }
+}
+```
++ When the app starts:
+
++ Spring makes an Engine bean.
+
++ Spring makes a Car bean.
+
++ Spring injects the Engine into Car via the constructor.
+
+#### Example — Setter Injection
+```
+@Component
+class Car {
+    private Engine engine;
+
+    @Autowired
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+}
+```
+#### Example — Field Injection (Not recommended for large projects)
+```
+@Component
+class Car {
+    @Autowired
+    private Engine engine;
+}
+
+```
