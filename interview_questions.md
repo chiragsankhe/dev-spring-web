@@ -1447,3 +1447,148 @@ public class MyBean { }
 @Scope("application")
 public class MyBean { }
 ```
+---
+---
+---
+
+## Spring Beans, Scopes, @Primary, @Qualifier, and @Lazy — Q&A
+### 1. In Spring, what is a bean?
+A bean is an object that is created, managed, and destroyed by the Spring IoC (Inversion of Control) container.
+You usually define beans using annotations like `@Component`,` @Service`,` @Repository`, or `@Bean`.
+```
+@Component
+public class MyService {
+    public void serve() {
+        System.out.println("Service running...");
+    }
+}
+```
+#### 2. How does Spring create and manage beans internally?
++ Spring reads bean definitions (from annotations/XML).
+
++ Creates objects (by calling constructors).
+
++ Performs dependency injection.
+
++ Manages the lifecycle (initialization → usage → destruction).
+
+#### 3. What is the default scope of a bean in Spring?
+Singleton — only one instance per Spring container.
+
+#### 4. How can you define a bean in Spring without using @Component?
+Using `@Bean` inside a` @Configuration` class:
+```
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+Bean Scopes
+#### 5. Name at least 5 bean scopes in Spring and explain.
++ singleton — One instance for entire Spring container (default).
+
++ prototype — New instance every time bean is requested.
+
++ request — One instance per HTTP request (web apps).
+
++ session — One instance per HTTP session (web apps).
+
++ application — One instance per ServletContext.
+
+#### 6. Difference between singleton and prototype scope
+```
+@Component
+@Scope("singleton")
+class SingletonBean {}
+
+@Component
+@Scope("prototype")
+class PrototypeBean {}
+```
++ Singleton → One instance reused for all injections.
+
++ Prototype → A new object each time getBean() is called.
+
+#### 7. In prototype scope, who destroys the bean?
+Spring does not manage destruction — the client code must handle it.
+
+#### 8. When to use request scope vs session scope?
+Request → Temporary data for a single HTTP request (e.g., form submission).
+
+Session → User-specific data across multiple requests (e.g., shopping cart).
+
+#### 9. Can a singleton depend on a prototype bean?
++ Yes, but the prototype bean will be created only once at singleton creation unless you use `ObjectFactory `or` @Lookup`  to get fresh instances.
+
+### @Primary and @Qualifier
+#### 10. If two beans implement the same interface, how does Spring decide which one to inject?
+Spring will throw `NoUniqueBeanDefinitionException ` unless you specify `@Primary` or `@Qualifier`.
+
+#### 11. Purpose of @Primary
+```
+@Component
+@Primary
+class CricketCoach implements Coach {}
+
+@Component
+class FootballCoach implements Coach {}
+```
+Here, CricketCoach will be injected by default.
+
+#### 12. How does @Qualifier differ from @Primary?
++ `@Primary` sets a default bean.
+
++ `@Qualifier` tells Spring exactly which bean to use in that injection point.
+
+#### 13. Can we use @Primary and @Qualifier together?
++ Yes — but @Qualifier overrides @Primary.
+
+### @Lazy
+#### 14. What does @Lazy do?
+Delays bean creation until it’s first needed.
+```
+@Component
+@Lazy
+class HeavyBean {
+    public HeavyBean() {
+        System.out.println("HeavyBean created!");
+    }
+}
+```
+#### 15. Default bean initialization strategy in Spring
++ Eager — Beans are created at container startup unless @Lazy is used.
+
+#### 16. Make a singleton bean load only when needed
+```
+@Component
+@Lazy
+class ReportGenerator {}
+```
+#### 17. What if you put @Lazy on a prototype bean?
++ It has no real effect — prototype beans are already created only when requested.
+
+Scenario Questions with Code
+18. Default bean selection
+```
+@Component
+@Primary
+class CricketCoach implements Coach {}
+
+@Component
+class FootballCoach implements Coach {}
+```
+### 19. Need a new object every time for ShoppingCart
+```
+@Component
+@Scope("prototype")
+class ShoppingCart {}
+```
+#### 20. Optimize startup time for heavy bean
+```
+@Component
+@Lazy
+class BigDataProcessor {}
+```
