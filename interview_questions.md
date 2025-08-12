@@ -1372,3 +1372,78 @@ public class MyApp {
 + • In general, I recommend using `@Qualifier`
 +  • More specific
  + • Higher priority
+---
+## 8. @lazy 
++ In Spring, @Lazy means "`create this bean only when it’s first needed`" instead of at application startup.
+
+## By default
+ +Spring Boot creates all beans eagerly at startup (when the ApplicationContext loads).
+
++ This means all `@Component` or` @Bean`  objects are created before your app starts handling requests.
+
+#### With @Lazy
++ Spring delays bean creation until you actually use it (lazy initialization).
+
++ This can make startup faster if some beans are heavy and not always needed.
+
+---
+## Bean Scopes
++ Bean Scopes in Spring
+### A bean scope tells Spring:
+
++ How long should this bean exist in memory?
+
+ + How many copies of this bean should be created?
+
++ How is it shared across the application?
+
+### Main Bean Scopes
+#### 1. Singleton (Default)
++ Only one instance of the bean is created for the entire Spring container.
+
++ Shared across the whole application.
+
++ Lifecycle: Created at application startup, destroyed at shutdown.
+```
+@Component
+public class MyCoach { }
+```
+(No need to specify — default is singleton)
+
+#### 2. Prototype
++ A new instance is created every time it’s requested.
+
++ Lifecycle: Created when requested, destroyed by the caller, not Spring.
+```
+@Component
+@Scope("prototype")
+public class MyCoach { }
+```
+### 3. Request (Web only)
++ One bean instance per HTTP request.
+
++ Lifecycle: Created at request start, destroyed at request end.
+```
+@Component
+@Scope("request")
+public class MyBean { }
+```
+#### 4. Session (Web only)
++ One bean instance per HTTP session.
+
++ Lifecycle: Created at session start, destroyed when session ends.
+
+```
+@Component
+@Scope("session")
+public class MyBean { }
+```
+#### 5. Application (Web only)
++ One bean instance per ServletContext.
+
++ Lifecycle: Created when context starts, destroyed when context shuts down.
+```
+@Component
+@Scope("application")
+public class MyBean { }
+```
