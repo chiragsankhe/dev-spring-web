@@ -1592,3 +1592,157 @@ class ShoppingCart {}
 @Lazy
 class BigDataProcessor {}
 ```
+---
+
+# Hibernate JPA CRUD
+## 1. what is Hibernate?
++ Hibernate is a framework in Java that is used for Object Relational Mapping (ORM).
+
++ 👉 In simple words: it helps you map Java objects (classes) to database tables and vice versa, so you don’t have to write a lot of raw SQL queries for CRUD (Create, Read, Update, Delete) operations.
+
+## 🔑 Key Points about Hibernate:
+
++ `ORM`  (Object Relational Mapping)
+
++ Java Class ↔ Database Table
+
++ Java Object ↔ Table Row
+
++ Java Field ↔ Table Column
+
+## Database Independent
+
++ You can switch from MySQL to Oracle, PostgreSQL, etc., without changing much code.
+
+## Reduces Boilerplate Code
+
++ You don’t need to write complex JDBC code (like ResultSet, PreparedStatement, etc.). Hibernate does it internally.
+
+## HQL (Hibernate Query Language)
+
++ Instead of writing SQL queries, you can write queries using HQL, which is object-oriented and works on entities, not tables.
+
+## Automatic Table Generation
+
++ Hibernate can automatically ` create ` or ` update`  database tables from your Java entities using configurations.
+
+## 2. what ORM?
++ `ORM` (Object Relational Mapping) is a technique (not just a tool) that allows you to map objects in your programming language (like Java classes) to relational database tables.
+
+**So in short:
+ORM = A way to map Java objects ↔ Database tables so developers work with objects, not raw SQL.**
+
+### 🔑 Simple Example
+
++ Suppose you have a table in a database:
+
+students
+```
+id	name	city
+1	Chirag	Boisar
+```
+And you have a Java class:
+```
+public class Student {
+    private int id;
+    private String name;
+    private String city;
+    
+    // getters and setters
+}
+```
+
+### 👉 ORM connects these two worlds:
+
++ The table students is mapped to the class Student.
+
++ A row in the table is mapped to a Java object.
+
++ Columns (`id`,` name `,` city` ) are mapped to fields (`id`,` name` ,` city`).
+
++ So instead of writing SQL like this:
+```
+INSERT INTO students (name, city) VALUES ('Chirag', 'Boisar');
+```
+
+You just write in Java:
+```
+Student st = new Student();
+st.setName("Chirag");
+st.setCity("Boisar");
+session.save(st);  // Hibernate ORM saves it to the DB
+```
+### 🔧 Why ORM is useful?
+
+#### Bridges Object-Oriented and Relational gap
+
++ Java works with `objects` , but DB works with `tables`  → ORM connects them.
+
+#### Reduces Boilerplate Code
+
++ No need to manually handle `ResultSet`,` PreparedStatement` , etc.
+
+#### Database Independent
+
++ Same Java code works with `MySQL`,` Oracle`,` PostgreSQL` , etc.
+
+## Supports Relationships
+```
+ORM can handle `One-to-One`,` One-to-Many`,` Many-to-Many ` mappings between  `classes` and `tables`  easily.
+```
+### 🚀 Examples of ORM Frameworks
+
++ Hibernate (most popular in Java)
+
++ JPA (Java Persistence API) – a standard, Hibernate is one implementation
+
++ EclipseLink
+
++ Spring Data JPA (built on top of Hibernate/JPA)
+
+## 3. what is JPA?
+### 🔑 What is JPA?
+
++ JPA (Java Persistence API) is a specification in Java that defines how to manage relational data (tables in DB) using Java objects (entities).
+
+### 👉 In simple words:
+
++ JPA is not a framework or tool itself.
+
++ It’s a set of rules (interfaces and annotations) for ORM in Java.
+
++ Frameworks like Hibernate, EclipseLink, OpenJPA implement JPA.
+
+📌 Example
+
++ Suppose you want to map a Java class Student to a database table.
+With JPA annotations, you do this:
+```
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "student")
+public class Student {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    
+    private String name;
+    private String city;
+
+    // getters and setters
+}
+
+```
+Here:
+```
+@Entity → tells JPA this class is a database table.
+
+@Table → maps it to the DB table name.
+
+@Id → primary key.
+
+@GeneratedValue → auto-generated ID.
+```
+👉 You only use annotations and JPA interfaces. The actual work (like SQL generation, DB communication) is done by JPA provider (like Hibernate).
