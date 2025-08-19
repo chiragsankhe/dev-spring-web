@@ -2007,18 +2007,18 @@ Important Annotations for Fields
 private Long id;
 
 ```
-Here, GenerationType.IDENTITY is the ID generation strategy.
+Here, `GenerationType.IDENTITY` is the ID generation strategy.
 
 ## AUTO Strategy (Default)
 How it works
 
 + Hibernate automatically chooses the strategy based on the database dialect:
 
-+ MySQL → uses IDENTITY
++ MySQL → uses `IDENTITY`
 
-+ Oracle → uses SEQUENCE
++ Oracle → uses `SEQUENCE`
 
-+ Others → falls back to TABLE
++ Others → falls back to` TABLE`
 
 Example
 ```
@@ -2034,3 +2034,14 @@ public class Customer {
     private String name;
 }
 ```
+
+### Available ID Generation Strategies
+
+JPA provides four main strategies in GenerationType enum:
+
+| Strategy	  |Who Generates ID	DB Sequence Required | 	Example   | Databases | 
+|---------|------------------------------|-----------------|-----------------|
+| IDENTITY	| Database auto-increments ID	| ❌ No  | 	MySQL, SQL Server | 
+| SEQUENCE  |	Uses DB sequence object	| ✅ Yes	 |Oracle, PostgreSQL |
+| TABLE  |	Uses a separate table to store IDs	| ❌ No  |	Any DB| 
+| AUTO (default) | 	Hibernate chooses based on DB dialect	Depends | 	All DBs| 
