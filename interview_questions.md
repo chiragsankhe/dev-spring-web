@@ -1926,3 +1926,73 @@ insert into student (city, name, id) values ('Boisar', 'Chirag', 1)
 +` show-sql `= log SQL queries
 
 + `database-platform` = which DB SQL dialect to use
+  
+## 6. Java Annotations for Mapping Classes & Fields to Database Tables
+
++ When you use ` Spring Boot + JPA + Hibernate` , you can map Java classes to database tables and fields to table columns using annotations.
+
+### Step 1: Map Class to Database Table
+
+Use the `@Entity` and `@Table` annotations.
+```
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity // Marks this class as a JPA entity (table in DB)
+@Table(name = "students") // Maps class to table "students"
+public class Student {
+
+    // fields will go here
+
+}
+```
+### Explanation:
+
+### @Entity
+
++ Makes the class a persistent entity.
+
++ Required to tell JPA/Hibernate to create/manage a table for this class.
+
+## @Table(name = "students")
+
++ By default, the table name = class name (Student → student).
+
++ If you want a custom name, specify @Table(name = "students").
+
+### Step 2: Map Fields to Database Columns
+
+Use annotations like `@Id`, `@GeneratedValue`, and `@Column`.
+```
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+
+    @Id  // Marks this column as the PRIMARY KEY
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id") // Maps field to "id" column
+    private int id;
+
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
+    // Constructors, getters, setters...
+}
+```
+Important Annotations for Fields
+|Annotation	| Purpose	 |Example |
+|----------|-----------|----------|
+| `@Id` |	Marks field as Primary Key	 |@Id private int id;|
+| `@GeneratedValue`	| Auto-generates primary key values | 	`@GeneratedValue(strategy = GenerationType.IDENTITY)` |
+| `@Column` | 	Maps Java field to DB column and sets properties like nullable, length, unique |	@Column(name="first_name",nullable=false)|
+|`@Transient ` |	Field is not persisted in DB |	@Transient private int tempValue;| 
+| `@Temporal` |	Used for Date fields to specify date type |	@Temporal(TemporalType.DATE) |
+|`@Lob`	| For large objects like images or long text | 	@Lob private byte[] photo; | 
