@@ -1996,3 +1996,41 @@ Important Annotations for Fields
 |`@Transient ` |	Field is not persisted in DB |	@Transient private int tempValue;| 
 | `@Temporal` |	Used for Date fields to specify date type |	@Temporal(TemporalType.DATE) |
 |`@Lob`	| For large objects like images or long text | 	@Lob private byte[] photo; | 
+
+## 7. What is ID Generation Strategy?
+
++ When you annotate a field with `@Id`  in JPA, you also need to define how the primary key is generated.
++ This is done using the `@GeneratedValue` annotation:
+```
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+
+```
+Here, GenerationType.IDENTITY is the ID generation strategy.
+
+## AUTO Strategy (Default)
+How it works
+
++ Hibernate automatically chooses the strategy based on the database dialect:
+
++ MySQL → uses IDENTITY
+
++ Oracle → uses SEQUENCE
+
++ Others → falls back to TABLE
+
+Example
+```
+@Entity
+@Table(name = "customers")
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+}
+```
