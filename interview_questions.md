@@ -2337,3 +2337,157 @@ public class StudentDAO {
 + Use JpaRepository for 80-90% of cases.
 
 + Use EntityManager only when JpaRepository is `insufficient`.
+
+### Scenario 1 — Using JpaRepository (Spring Data JPA) ✅ (Preferred Way)
+
++ When you use JpaRepository, you don’t need to create a DAO implementation manually.
++ Spring Data JPA automatically generates the implementation for you at runtime.
+
+### Steps
+### Step 1 — Create Student Entity
+```
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+    private String email;
+
+    public Student() {}
+    public Student(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+    // getters & setters
+}
+```
+### Step 2 — Create StudentRepository
+```
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+    // Optional: Custom query using method names
+    List<Student> findByName(String name);
+}
+```
+
++ 🔹 No need to create `StudentDAOImpl` — Spring Boot auto-generates it internally.
+
+### Step 3 — Use in Service
+```
+@Service
+public class StudentService {
+
+    @Autowired
+    private StudentRepository studentRepo;
+
+    public List<Student> getAllStudents() {
+        return studentRepo.findAll();
+    }
+
+    public Student saveStudent(Student student) {
+        return studentRepo.save(student);
+    }
+
+    public void deleteStudent(int id) {
+        studentRepo.deleteById(id);
+    }
+}
+```
+#### When Using JpaRepository
+
++ Do we create StudentDAO interface? → ✅ Yes (but we call it StudentRepository)
+
++ Do we create StudentDAOImpl? → ❌ No, Spring Data JPA does it automatically.
+
++ Do we write JPQL manually? → ❌ Not required for basic CRUD.
+
++ For custom queries → Use `@Query` or naming conventions.
+
+## Scenario 2 — Using EntityManager (Manual DAO Implementation) ⚡
+
++ If you don’t want to use `JpaRepository` or you need full control over queries,
++ you have to create DAO and DAO implementation manually.
+
+Steps
+### Step 1 — Create StudentDAO Interface
+```
+import java.util.List;
+
+public interface StudentDAO {
+    List<Student> findAll();
+    Student findById(int id);
+    void save(Student student);
+    void deleteById(int id);
+}
+```
+### Step 2 — Create StudentDAOImpl Class
+```
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public class StudentDAOImpl implements StudentDAO {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<Student> findAll() {
+        TypedQuery<Student> query = entityManager.createQuery("FROM Student", Student.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public Student findById(int id) {
+        return entityManager.find(Student.class, id);
+    }
+
+    @Override
+    public void save(Student student) {
+        entityManager.merge(student);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        Student student = entityManager.find(Student.class, id);
+        if (student != null) {
+            entityManager.remove(student);
+        }
+    }
+}
+```
+
+### Step 3 — Use in Service
+```
+@Service
+public class StudentService {
+
+    @Autowired
+    private StudentDAO studentDAO;
+
+    public List<Student> getAllStudents() {
+        return studentDAO.findAll();
+    }
+
+    public void saveStudent(Student student) {
+        studentDAO.save(student);
+    }
+}
+```
+### When Using EntityManager
+
++ Do we create StudentDAO interface? → ✅ Yes
+
++ Do we create StudentDAOImpl class? → ✅ Yes
+
++ Do we write JPQL or Native Queries manually? → ✅ Yes
+
