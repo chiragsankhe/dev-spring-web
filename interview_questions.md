@@ -2491,3 +2491,474 @@ public class StudentService {
 
 + Do we write JPQL or Native Queries manually? → ✅ Yes
 
+## 10.  Purpose of Empty Constructor in Spring Boot
+
++ In Spring Boot, we usually create an empty constructor in ` Entity ` classes or ` Beans ` because Spring uses `reflection` and `object mapping frameworks` like Hibernate (JPA) to create objects dynamically at runtime.
+
+### 2. Why JPA/Hibernate Needs It
+
++ When you use JPA or Hibernate in Spring Boot, your entity classes represent database tables.
++ Hibernate internally creates objects of your entity classes using reflection (not `new` keyword).
+
+### How it works
+
++ When Spring Boot fetches data from the database, Hibernate:
+
++ Creates an empty object of your entity class using the default constructor.
+
++ Populates all fields using setter methods or reflection.
+
++ If your class does not have a no-args constructor, Hibernate cannot instantiate the object → this causes a `runtime error`.
+
+### Example Without Empty Constructor ❌
+```
+@Entity
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+
+    // ✅ Parameterized constructor only
+    public Student(String name) {
+        this.name = name;
+    }
+}
+```
+
+Problem:
+```
+Student student = entityManager.find(Student.class, 1);
+
+```
++ Hibernate will try to create a Student object using the `no-args constructor`,
++ but since it doesn’t exist → `throws an exception`:
+```
+org.hibernate.InstantiationException: No default constructor for entity
+```
+### Correct Approach ✅
+```
+@Entity
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+
+    // ✅ Empty constructor required by JPA
+    public Student() {}
+
+    // Optional parameterized constructor
+    public Student(String name) {
+        this.name = name;
+    }
+}
+```
+
+### Now Hibernate can:
+
++ Use the empty constructor to create an object.
+
++ Set the name and `id`  using setters or reflection.
+
+### 3. Why Spring Beans Also Need It
+
++ When you create Spring-managed beans (`@Component`, `@Service`, `@Repository`, etc.),
++ Spring uses `reflection` to create bean objects at startup.
+
+Example:
+```
+@Service
+public class StudentService {
+
+    private final StudentRepository studentRepository;
+
+    // ✅ Constructor Injection (recommended)
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+}
+```
+
++ If you don’t define any constructor, Spring uses the implicit default constructor.
+
++ If you define a parameterized constructor only, Spring can still handle it if the dependencies are available.
+
++ But for `JPA entities` , the no-args constructor is `mandatory`.
+
+#### 4. Summary Table
+|Use Case |	Empty Constructor Needed? |	Why |
+|----------|-----------------|---------------|
+|JPA Entity  (@Entity) |	✅ Yes	 |Hibernate creates objects using reflection |
+|Spring Bean (@Service, @Component, etc.)	 |❌ Not | mandatory (if using constructor injection)	Spring can handle parameterized constructor|
+|DTO / Model |	❌ Optional	Only  |needed if used by frameworks like Jackson or  JPA |
+|Jackson (JSON mapping) |	✅ Often |	Jackson needs a no-args constructor to deserialize JSON into objects |
+
+#### 6. Key Rule to Remember
+
++ Always provide a no-args constructor in your JPA entity classes ✅
++ It ensures that Hibernate, Spring Data JPA, and JSON libraries like Jackson can create objects smoothly.
+
+
+## 1. What Are Getters and Setters?
+
++ `Getter` → A method that retrieves (gets) the value of a private field.
+
++ `Setter` → A method that updates (sets) the value of a private field.
+
++ They’re part of the encapsulation principle in OOP (Object-Oriented Programming).
+
+Example
+```
+public class Student {
+
+    private String name; // private variable
+    private int age;
+
+    // ✅ Getter
+    public String getName() {
+        return name;
+    }
+
+    // ✅ Setter
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+### 2. Why Do We Use Getters and Setters?
+#### (a) Encapsulation (Data Hiding)
+
++ Fields are usually marked private.
+
++ You control access to them using `getters` and `setters`.
+
++ Prevents direct modification of data from outside the class.
+```
+Student s = new Student();
+s.name = "Chirag";   // ❌ Not allowed if `name` is private
+s.setName("Chirag"); // ✅ Correct way
+```
+#### (b) Validation Before Setting
+
+We can add custom validation inside setters.
+```
+public void setAge(int age) {
+    if (age >= 0) {
+        this.age = age;
+    } else {
+        System.out.println("Age cannot be negative!");
+    }
+}
+```
+This ensures invalid data doesn’t get stored.
+
+#### (c) Flexibility for Future Changes
+
++ If we directly access variables, we can't modify the logic later.
++ With getters and setters, we can add extra logic without breaking code.
+
+#### 3. How Getters and Setters Work Internally
+
+Let’s see how they actually control access to private variables:
+
+Step 1 — Create Object
+```
+Student s = new Student();
+```
+
++ Allocates memory for Student object.
+
++ Initializes fields like `name` and `age`.
+
+#### Step 2 — Setting Value
+```
+s.setName("Chirag");
+
+Calls the setter method:
+
+public void setName(String name) {
+    this.name = name; // assigns value to private variable
+}
+
+```
+### Step 3 — Getting Value
+```
+System.out.println(s.getName());
+
+
+Calls the getter method:
+
+public String getName() {
+    return name; // retrieves private variable value
+}
+```
+
+### 4. Getters & Setters in Spring Boot (Entities)
+
++ In Spring Boot (especially JPA entities), getters and setters are ` mandatory`  because:
+
++ Hibernate / JPA uses reflection to create objects.
+
++ While persisting and fetching data, Hibernate needs getters and setters to `read/write` values.
+
+Example: Student Entity
+```
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+
+    private String email;
+
+    // ✅ Getter and Setter required for Hibernate
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+```
+
++ Without getters and setters, Hibernate cannot set the database column values into the entity object → you’ll face mapping issues.
+
+### 5. Shortcut: Lombok in Spring Boot 🚀
+
++ In Spring Boot, instead of writing boilerplate getters & setters, we often use Lombok.
+Example with Lombok
+```
+import lombok.Getter;
+import lombok.Setter;
+import jakarta.persistence.*;
+
+@Entity
+@Getter
+@Setter
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+    private String email;
+}
+
+
+@Getter → Generates all getter methods automatically.
+
+@Setter → Generates all setter methods automatically.
+```
+6. Summary Table
+|Aspect |	Without Getter/Setter ❌	 |With Getter/Setter ✅ |
+|------------|-----------------|----------------------------|
+|Encapsulation |	❌ No |	✅ Yes |
+|Validation |	❌ Cannot validate values |	✅ Validation possible |
+|Hibernate / JPA	❌ Will fail mapping |	✅ Works perfectly|
+|JSON Mapping	❌ Might fail in Spring REST |	✅ Works smoothly |
+|Boilerplate	 |Less code but unsafe |	More code but safe |
+### Final Takeaways
+
++ Getters → Used to read private variables.
+
++ Setters → Used to modify private variables.
+
++ Encapsulation → Achieved using private fields + getters/setters.
+
++ In Spring Boot + JPA, getters & setters are mandatory for entity classes.
+
++ Use `Lombok (@Getter & @Setter)` to avoid boilerplate code.
+
+
+###  What is toString() in Java?
+
++ `toString()` is a method of the Object class in Java.
+
++ It is used to represent an object as a string.
+
++ By default, every Java class inherits the toString() method from the Object class.
+
++ Default Behavior
+
++ If we don’t override toString(), it returns something like this:
+```
+Student@5e91993f
+```
+
+This is class name + hash code → not readable.
+
+### 2. Why Do We Override toString()
+
+We override the toString() method to return a meaningful string representation of an object.
+
+Example Without toString() ❌
+```
+public class Student {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student("Chirag", 23);
+        System.out.println(s);
+    }
+}
+```
+
+Output:
+```
+Student@5e91993f   // ❌ Not helpful
+```
+Example With toString() ✅
+```
+public class Student {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', age=" + age + "}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student("Chirag", 23);
+        System.out.println(s);
+    }
+}
+```
+
+Output:
+```
+Student{name='Chirag', age=23}   // ✅ Readable and useful
+```
+### 3. Why toString() is Useful in Spring Boot & JPA
++ In Spring Boot, we often fetch objects from the database using JPA repositories or EntityManager.
+
+Without toString()
+```
+Student student = studentRepository.findById(1).get();
+System.out.println(student);
+
+```
+Output:
+```
+com.example.Student@3e3abc88
+
+```
+❌ Not readable.
+
+### With toString()
+```
+@Override
+public String toString() {
+    return "Student{id=" + id + ", name='" + name + "', email='" + email + "'}";
+}
+```
+
+Output:
+```
+Student{id=1, name='Chirag', email='chirag@example.com'}
+```
+
+ +✅ Much better for debugging and logging.
+
+### 4. How toString() Works Internally
+
+Every Java object inherits toString() from Object class:
+```
+public String toString() {
+    return getClass().getName() + "@" + Integer.toHexString(hashCode());
+}
+```
+
++ When we override it, we replace this default implementation with a custom string.
+
+### 5. In Spring Boot — Logging and Debugging
+
+Spring Boot uses logging frameworks like Logback or SLF4J.
+When you log an object, Spring calls toString() internally.
+
+Example
+```
+Student student = studentRepository.findById(1).get();
+log.info("Student data: {}", student);
+```
+
++ If you don’t override toString() → You’ll see something unreadable.
+
++ If you override toString() → You get clean, structured output.
+
+### 6. Shortcut with Lombok 🚀
+
+In Spring Boot, we often use Lombok to avoid writing boilerplate toString() manually.
+
+Example
+```
+import lombok.ToString;
+
+@Entity
+@ToString
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+    private String email;
+}
+
+```
++ Lombok automatically generates a readable toString() method.
+
+Output when printing:
+```
+Student(id=1, name=Chirag, email=chirag@example.com)
+```
