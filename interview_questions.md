@@ -2045,3 +2045,295 @@ JPA provides four main strategies in GenerationType enum:
 | SEQUENCE  |	Uses DB sequence object	| ✅ Yes	 |Oracle, PostgreSQL |
 | TABLE  |	Uses a separate table to store IDs	| ❌ No  |	Any DB| 
 | AUTO (default) | 	Hibernate chooses based on DB dialect	Depends | 	All DBs| 
+
+## 8.DAO stands for Data Access Object.
++ It’s a design pattern used in Java (and other languages) to separate the ` persistence logic`  (database operations) from the business logic of your application.
+
+## In simpler terms:
++  DAO is like a ` middleman`  between your application and the database.
++ Instead of writing SQL queries directly inside your service or controller classes, you create a DAO layer where all database-related operations are handled.
+
+### Why use DAO? Why use DAO?
+
++ Separation of Concerns → Keeps database logic separate from business logic.
+
++ Easy to Maintain → If you change your database, you only modify the DAO layer.
+
++ Reusability → DAO methods can be reused in multiple services.
+
++ Testability → Easier to mock DAO methods during testing.
+
+### DAO Structure
+
+Typically, DAO has three parts:
+
++ `Entity (Model)` → Represents the database table.
+
++ `DAO Interface` → Declares the database operations.
+
++ `DAO Implementation` → Implements the actual database logic.
+
+### Example: Spring Boot DAO
+Step 1: Entity Class
+```
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "email")
+    private String email;
+
+    // Constructors
+    public Student() {}
+    public Student(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    // Getters & Setters
+    // toString()
+}
+```
+Step 2: DAO Interface
+```
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentDAO extends JpaRepository<Student, Integer> {
+    // We can define custom queries if needed
+}
+
+```
+Note: In Spring Boot, we often extend JpaRepository or CrudRepository, so we don’t need to manually implement DAO methods.
+
+Step 3: Using DAO in Service
+```
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class StudentService {
+
+    private final StudentDAO studentDAO;
+
+    public StudentService(StudentDAO studentDAO) {
+        this.studentDAO = studentDAO;
+    }
+
+    public List<Student> findAllStudents() {
+        return studentDAO.findAll();
+    }
+
+    public Student saveStudent(Student student) {
+        return studentDAO.save(student);
+    }
+
+    public void deleteStudent(int id) {
+        studentDAO.deleteById(id);
+    }
+}
+
+```
+
+ 
+
+Summary Table
+|Aspect |	Without DAO 🛑 |	With DAO ✅ |
+|---------|-----------|-----------------|
+|Database  |logic	Mixed with controllers/services |	Separated in DAO layer |
+|Maintainability	 |Hard	Easy|
+|Reusability	 |Low	High|
+|Testing |	Difficult	Easy|
+
+### 9. jpaRepository vs jpa entity  manager 
+
+### 1. JpaRepository (High-Level API) ✅
+
++ JpaRepository is an `interface` provided by Spring Data JPA that abstracts away most of the boilerplate code required for database operations.
+
+### Key Points
+
+#### Spring Data JPA Feature
+
++ Extends `PagingAndSortingRepository` and `CrudRepository`.
+
++ Very easy to use — you don’t need to write SQL or JPQL.
+
++ Suitable for 80% of CRUD operations.
+
++ Automatically implements methods like:
+
++ `findAll()`
+
++ `findById()1`
+
++ `save()`
+
++ `deleteById()`
+
+Allows custom query methods using naming conventions or `@Query`.
+
+Example: Using JpaRepository
+```
+Student Entity
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String name;
+    private String email;
+
+    public Student() {}
+    public Student(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+    // Getters & Setters
+}
+
+```
+StudentRepository Interface
+```
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+    // Custom query by naming convention
+    List<Student> findByName(String name);
+
+    // Custom JPQL query
+    @Query("SELECT s FROM Student s WHERE s.email LIKE %:email%")
+    List<Student> searchByEmail(@Param("email") String email);
+}
+```
+Usage in Service Layer
+```
+@Service
+public class StudentService {
+
+    @Autowired
+    private StudentRepository studentRepo;
+
+    public List<Student> getAllStudents() {
+        return studentRepo.findAll();
+    }
+
+    public Student saveStudent(Student student) {
+        return studentRepo.save(student);
+    }
+
+    public void deleteStudent(int id) {
+        studentRepo.deleteById(id);
+    }
+}
+```
+
+### 2. EntityManager (Low-Level API) ⚡
+
++ EntityManager is part of JPA itself (Jakarta Persistence API) and gives fine-grained control over database operations.
+
+### Key Points
+
++ Comes from Jakarta Persistence / JPA.
+
++ Used for custom `queries` and `operations` that JpaRepository can’t handle easily.
+
++ Provides manual control over:
+
++ Transactions
+
++ Persistence context
+
++ JPQL and Native SQL queries
+
++ More flexible but more verbose.
+
+ +Required when you need complex joins, projections, batch updates, or stored procedures.
+
+Example: Using EntityManager
+```
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class StudentDAO {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public List<Student> findAllStudents() {
+        TypedQuery<Student> query = entityManager.createQuery("FROM Student", Student.class);
+        return query.getResultList();
+    }
+
+    public Student findById(int id) {
+        return entityManager.find(Student.class, id);
+    }
+
+    public void save(Student student) {
+        entityManager.merge(student);
+    }
+
+    public void deleteById(int id) {
+        Student student = entityManager.find(Student.class, id);
+        if (student != null) {
+            entityManager.remove(student);
+        }
+    }
+}
+```
+
+3. Comparison Table
+   
+|Feature |	JpaRepository  🟢 |	EntityManager 🔵 |
+|--------|-------------------|------------------|
+| Level of Abstraction |	High-level |	Low-level|
+|Boilerplate Code	 |Minimal |	More code |
+|CRUD Operations	 |Predefined methods |	Must write manually |
+|Custom Queries	 |Easy with @Query or method names |	Full control with JPQL / Native SQL|
+|Transaction  \Management	Handled automatically |	Manual control possible|
+|Best For	 |Simple to medium CRUD apps |	Complex DB logic, batch ops, custom joins|
+|Ease of Use |	Very easy \	Requires more knowledge |
+
+### 5. When to Use What?
+### Use JpaRepository when ✅
+
++ You want quick CRUD operations.
+
++ You have simple queries.
+
++ You want less boilerplate code.
+
++ You're building a standard REST API.
+
+### Use EntityManager when ⚡
+
++ You need custom JPQL / Native queries.
+
++ You need batch inserts/updates.
+
++ You want fine-grained transaction control.
+
++ You have complex joins or projections.
+
+### 5. Best Practice
+
++ In real Spring Boot projects:
+
++ Use JpaRepository for 80-90% of cases.
+
++ Use EntityManager only when JpaRepository is `insufficient`.
