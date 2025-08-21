@@ -2964,3 +2964,77 @@ public class StudentService {
 
 + Do we write JPQL or Native Queries manually? → ✅ Yes
 
+### . What is StudentDAO? 🎯
+
++ The DAO (Data Access Object)  `interface`  defines what operations we want to perform on the database.
++ It does not contain any implementation, only method declarations.
+
+Example: StudentDAO
+```
+import java.util.List;
+
+public interface StudentDAO {
+    List<Student> findAll();      // Get all students
+    Student findById(int id);     // Get student by ID
+    void save(Student student);   // Insert or update student
+    void deleteById(int id);      // Delete student by ID
+}
+```
+
+What we do here
+
+Define abstract methods for CRUD operations.
+
++ `No logic`,` no queries `,` no implementation`.
+
++ Think of this as a blueprint for data access.
+
+### 2. What is StudentDAOImpl? 🛠️
+
++ This is the implementation class of StudentDAO.
+Here, we write the actual database logic — using EntityManager or JPA/Hibernate APIs.
+
+Example: StudentDAOImpl
+```
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public class StudentDAOImpl implements StudentDAO {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    // ✅ Get all students
+    @Override
+    public List<Student> findAll() {
+        TypedQuery<Student> query = entityManager.createQuery("FROM Student", Student.class);
+        return query.getResultList();
+    }
+
+    // ✅ Get student by ID
+    @Override
+    public Student findById(int id) {
+        return entityManager.find(Student.class, id);
+    }
+
+    // ✅ Save or update student
+    @Override
+    public void save(Student student) {
+        entityManager.merge(student); // Works for both insert & update
+    }
+
+    // ✅ Delete student by ID
+    @Override
+    public void deleteById(int id) {
+        Student student = entityManager.find(Student.class, id);
+        if (student != null) {
+            entityManager.remove(student);
+        }
+    }
+}
+
+```
