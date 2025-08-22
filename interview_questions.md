@@ -3038,3 +3038,104 @@ public class StudentDAOImpl implements StudentDAO {
 }
 
 ```
+## 13. @Repository 
+Marks DAO classes as beans + makes exception handling easier + integrates with Spring transactions.
+## 14. EntityManager Methods in JPA
+
++ `EntityManager` is the core interface in JPA used to interact with the database.
++ It manages the lifecycle of entities and provides methods for CRUD operations.
+
+### 1. persist(Object entity)
+
++ Use → To `save`  a new entity into the database.
+
++ Moves entity from Transient → Managed state.
+
+SQL INSERT will be executed when the transaction commits.
+
+Example:
+```
+@Transactional
+public void save(Student student) {
+    entityManager.persist(student);
+}
+```
+
+Inserts a new record into the student table.
+
+### 2. merge(Object entity)
+
+Use → To `update` an existing entity or save detached entities.
+
+Returns a managed copy of the entity.
+
+If the entity doesn’t exist, it inserts it.
+
+If it exists, it updates it.
+
+Example:
+```
+@Transactional
+public Student update(Student student) {
+    return entityManager.merge(student);
+}
+```
+
+If student with given ID exists → UPDATE
+If ID is null → INSERT
+
+### 3. find(Class<T> entityClass, Object primaryKey)
+
++ Use → To `retrieve` a single entity by its `primary key`.
+
++ If the entity exists → returns it.
+
++ If not → returns null.
+
+Always returns a managed entity.
+
+Example:
+```
+public Student findStudent(int id) {
+    return entityManager.find(Student.class, id);
+}
+```
+
+Equivalent to:
+```
+SELECT * FROM student WHERE id = ?;
+```
+### 4. getReference(Class<T> entityClass, Object primaryKey)
+
++ Use → Similar to `find()`, but returns a proxy object instead of immediately hitting the database.
+
++ Useful when you just need a reference without fetching full data.
+
+Throws `EntityNotFoundException` if the entity doesn’t exist when accessed.
+
+Example:
+```
+Student student = entityManager.getReference(Student.class, 5);
+System.out.println(student.getName()); // Only hits DB here
+```
+### 5. remove(Object entity)
+
++ Use → To `delete` an entity from the database.
+
++ Entity must be in managed state.
+
+If detached → fetch first, then remove.
+
+Example:
+```
+@Transactional
+public void deleteStudent(int id) {
+    Student student = entityManager.find(Student.class, id);
+    entityManager.remove(student);
+}
+```
+
+Equivalent to:
+```
+DELETE FROM student WHERE id = ?;
+```
